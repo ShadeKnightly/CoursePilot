@@ -42,4 +42,3 @@ It allows students to:
 
 ## Notes
 - Make sure **Node.js** is installed before running.  
-- If the project uses environment variables, ask the team for the `.env` file.
