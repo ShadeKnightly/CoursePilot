@@ -1,5 +1,6 @@
 import React from "react";
 import "./Header.css";
+import logo from "../../assets/bvc_logo.png"
 
 function Header() {
   return (
@@ -8,7 +9,7 @@ function Header() {
         <img
           className="logo"
           alt="logo"
-          src="https://placehold.co/150x150"
+          src={logo}
         />
       </div>
 
