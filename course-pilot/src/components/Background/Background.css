@@ -1,0 +1,11 @@
+.background {
+  background:
+    url("../../assets/VectorLines.svg") no-repeat center center fixed,
+    linear-gradient(to bottom, var(--color-primary), var(--color-secondary));
+  background-size: cover;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
