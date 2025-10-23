@@ -1,0 +1,41 @@
+.menu {
+  background-color: #000;
+  padding-top: 10px;
+  display: flex;
+  justify-content: left;
+  border-bottom: 1px solid #6C4CDA;
+}
+
+.menu ul {
+  list-style: none;
+  display: flex;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+}
+
+.menu li {
+  border: 1px solid #6C4CDA;
+  padding: 10px 20px;
+  text-align: center;
+  transition: 0.3s ease;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.menu li a {
+  color: #bcb8ff;
+  text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.menu li:hover {
+  background-color: #12003a;
+  box-shadow: 0 0 10px #6C4CDA;
+}
+
+.menu li a:hover {
+  color: #fff;
+}
