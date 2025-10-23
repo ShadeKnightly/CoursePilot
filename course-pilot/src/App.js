@@ -15,8 +15,8 @@ function App() {
       <Routes>
         <Route path="/" element={null} />
       </Routes>
-      </Background>
       <Footer />
+      </Background>
     </Router>
   );
 }
