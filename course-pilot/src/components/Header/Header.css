@@ -1,0 +1,54 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 30px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+/* Left side: logo only */
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+/* Center title */
+.title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+/* Logo */
+.logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+}
+
+/* Right side: signup link */
+.header-right {
+  display: flex;
+  align-items: center;
+}
+
+.signup-link {
+  color: white;
+  background-color: var(--color-accent);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.signup-link:hover {
+  background-color: var(--color-orange);
+}
