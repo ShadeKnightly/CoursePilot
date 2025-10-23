@@ -1,0 +1,15 @@
+.footer {
+  background-color: #6C4CDA;
+  color: #000000;
+  text-align: left;
+  padding: 15px 10px;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.85rem;
+  margin-top: 30px;
+  background: linear-gradient(to bottom, #8F5AA7 10%, #6C4CDA 99%);
+}
+
+.footer p {
+  margin: 0;
+  letter-spacing: 0.5px;
+}
