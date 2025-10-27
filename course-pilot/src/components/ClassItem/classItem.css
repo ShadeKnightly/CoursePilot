@@ -1,0 +1,68 @@
+.class-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 15, 35, 0.8);
+  border: 1px solid var(--color-secondary);
+  border-radius: 6px;
+  color: white;
+  padding: 10px;
+  margin: 10px 0;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.course-code {
+  background-color:var(--color-secondary);
+  padding: 20px;
+  min-width: 120px;
+  text-align: center;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.course-details {
+  flex: 1;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 0 20px;
+}
+
+.info p, .description p {
+  margin: 5px 0;
+  text-align: left;
+  color: #ddd;
+}
+
+.actions {
+  display: flex;
+  /* flex-direction: column; */
+  gap: 10px;
+}
+
+.add-btn {
+  background-color: var(--color-orange);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.add-btn:hover {
+  background-color: var(--color-orange-hover);
+}
+
+.remove-btn {
+  background: none;
+  color: white;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.remove-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
