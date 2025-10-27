@@ -4,18 +4,22 @@ import Header from "./components/Header/Header";
 import Background from "./components/Background/Background";
 import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
+import CardComp from "./components/card/cardComponent";
 import "./styles/Variables.css";
 
 function App() {
   return (
     <Router>
       <Background>
-      <Header />
-      <Menu />
-      <Routes>
-        <Route path="/" element={null} />
-      </Routes>
-      <Footer />
+        <Header />
+        <Menu />
+        <CardComp title='Test'>
+          <p>TestTest</p>
+        </CardComp>
+        <Routes>
+          <Route path="/" element={null} />
+        </Routes>
+        <Footer />
       </Background>
     </Router>
   );
