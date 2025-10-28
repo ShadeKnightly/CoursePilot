@@ -4,8 +4,11 @@ import Header from "./components/Header/Header";
 import Background from "./components/Background/Background";
 import Menu from "./components/Menu/Menu";
 import Footer from "./components/Footer/Footer";
-import CardComp from "./components/card/cardComponent";
-import ClassItem from "./components/ClassItem/classItem";
+import StudentDashboard from "./pages/Student/studentDashboard.jsx";
+// import Profile from "./pages/Profile";
+// import Registration from "./pages/Registration";
+// import Manage from "./pages/Manage";
+// import Contact from "./pages/Contact";
 import "./styles/Variables.css";
 
 function App() {
@@ -14,22 +17,16 @@ function App() {
       <Background>
         <Header />
         <Menu />
-        <CardComp title='Test'>
-          <p>TestTest</p>
-          <ClassItem
-            courseCode="COMP1001"
-            name="Programming Fundamentals"
-            term="Fall 2025"
-            startEnd="Sept 5 - Dec 15"
-            program="Software Development"
-            description="An introduction to programming and problem solving."
-            onAdd={() => alert("Added to cart!")}
-            onRemove={() => alert("Removed from cart!")}
-          />
-        </CardComp>
+
         <Routes>
           <Route path="/" element={null} />
+          <Route path="/dashboard" element={<StudentDashboard />} />
+          {/* <Route path="/profile" element={<Profile />} />
+          <Route path="/registration" element={<Registration />} />
+          <Route path="/manage" element={<Manage />} />
+          <Route path="/contact" element={<Contact />} /> */}
         </Routes>
+
         <Footer />
       </Background>
     </Router>
