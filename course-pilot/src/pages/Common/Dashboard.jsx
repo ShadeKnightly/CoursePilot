@@ -2,7 +2,7 @@ import React from "react";
 import CardComp from "../../components/card/cardComponent";
 
 
-const StudentDashboard = () => {
+const Dashboard = () => {
   // Mocked data for now, will replace with backend data 
   const student = {
     firstName: "FirstName",
@@ -27,4 +27,4 @@ const StudentDashboard = () => {
   );
 };
 
-export default StudentDashboard;
+export default Dashboard;
