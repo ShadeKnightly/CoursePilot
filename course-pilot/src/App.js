@@ -8,6 +8,7 @@ import Dashboard from "./pages/Common/Dashboard.jsx";
 import Profile from "./pages/Common/Profile.jsx";
 // import Registration from "./pages/Student/Registration/Registration.jsx";
 import CourseSelection from "./pages/Student/courseSelection.jsx";
+import CourseCart from "./pages/Student/course-cart.jsx";
 // import Manage from "./pages/Manage";
 // import Contact from "./pages/Contact";
 import "./styles/Variables.css";
@@ -24,6 +25,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/registration" element={<CourseSelection />} />
+          <Route path="/cart" element={<CourseCart />} />
+
           {/* <Route path="/manage" element={<Manage />} />
           <Route path="/contact" element={<Contact />} />  */}
         </Routes>
