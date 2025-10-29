@@ -1,7 +1,11 @@
 import React from "react";
 import "./classItem.css";
+import { useLocation } from "react-router-dom";
 
 function ClassItem({ courseCode, name, term, startEnd, program, description, onAdd, onRemove }) {
+    const location = useLocation();
+    const hideAdd = location.pathname === "/cart";
+  
   return (
     <div className="class-card">
       <div className="course-code">
@@ -21,7 +25,7 @@ function ClassItem({ courseCode, name, term, startEnd, program, description, onA
       </div>
 
       <div className="actions">
-        <button className="add-btn" onClick={onAdd}>Add to course cart</button>
+        {!hideAdd && (<button className="add-btn" onClick={onAdd}>Add to course cart</button>)}
         <button className="remove-btn" onClick={onRemove}>Remove from course cart</button>
       </div>
     </div>

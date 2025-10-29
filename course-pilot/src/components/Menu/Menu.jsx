@@ -17,7 +17,7 @@ function Menu({ isAdmin }) {
         ) : (
           <>
             <li><Link to="/registration">Course Registration</Link></li>
-            <li><Link to="/manage">Add / Remove</Link></li>
+            <li><Link to="/courses">My Courses</Link></li>
             <li><Link to="/contact">Contact Form</Link></li>
           </>
         )}
