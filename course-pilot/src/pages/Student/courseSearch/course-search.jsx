@@ -197,6 +197,9 @@ const CourseSearch = () => {
           <>
             <DropDownFilter onChangeHandler={onTermChange} value={selectedTerm} />
             <SearchBox placeholder="Search" onChangeHandler={onSearchChange} />
+            <button onClick={() => navigate("/registration")}>
+              ← Back to Course Registration
+            </button>
 
             {filteredCourses.length > 0 ? (
               filteredCourses.map((course) => (
@@ -215,9 +218,7 @@ const CourseSearch = () => {
               <p>No courses match your search.</p>
             )}
 
-            <button onClick={() => navigate("/registration")}>
-              ← Back to Course Registration
-            </button>
+            
           </>
         )}
       </CardComp>
