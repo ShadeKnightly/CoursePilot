@@ -9,6 +9,7 @@ import Profile from "./pages/Common/Profile.jsx";
 // import Registration from "./pages/Student/Registration/Registration.jsx";
 import CourseSelection from "./pages/Student/courseSelection.jsx";
 import CourseCart from "./pages/Student/course-cart.jsx";
+import CourseSearch from "./pages/Student/courseSearch/course-search.jsx";
 // import Manage from "./pages/Manage";
 // import Contact from "./pages/Contact";
 import "./styles/Variables.css";
@@ -26,6 +27,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/registration" element={<CourseSelection />} />
           <Route path="/cart" element={<CourseCart />} />
+          <Route path="/search" element={<CourseSearch />} />
+
 
           {/* <Route path="/manage" element={<Manage />} />
           <Route path="/contact" element={<Contact />} />  */}

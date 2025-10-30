@@ -1,0 +1,10 @@
+
+select {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-accent);
+  background-color: var(--color-primary);
+  color: #fff;
+  width: 200px;
+  text-align: center;
+}
