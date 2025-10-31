@@ -4,7 +4,9 @@ import { useLocation } from "react-router-dom";
 
 function ClassItem({ courseCode, name, term, startEnd, program, description, onAdd, onRemove }) {
     const location = useLocation();
-    const hideAdd = location.pathname === "/cart";
+    
+    const isCoursesPage = location.pathname === "/courses";
+    const isCartPage = location.pathname === "/cart";
   
   return (
     <div className="class-card">
@@ -25,8 +27,20 @@ function ClassItem({ courseCode, name, term, startEnd, program, description, onA
       </div>
 
       <div className="actions">
-        {!hideAdd && (<button className="add-btn" onClick={onAdd}>Add to course cart</button>)}
-        <button className="remove-btn" onClick={onRemove}>Remove from course cart</button>
+        {/* Hide Add button on /cart and /courses */}
+        {!isCartPage && !isCoursesPage && (
+          <button className="add-btn" onClick={onAdd}>Add to course cart</button>
+        )}
+
+        {/* Show Remove button only on /cart */}
+        {isCartPage && (
+          <button className="remove-btn" onClick={onRemove}>Remove from course cart</button>
+        )}
+
+        {/* Show Unregister button only on /courses */}
+        {isCoursesPage && (
+          <button className="remove-btn" onClick={onRemove}>Unregister</button>
+        )}
       </div>
     </div>
   );

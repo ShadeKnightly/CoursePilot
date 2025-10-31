@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import CardComp from "../../components/card/cardComponent";
 import ClassItem from "../../components/ClassItem/classItem";
 
-const CourseCart = () => {
-  const navigate = useNavigate();
+const UserCourses = () => {
 
   // Simulate fetching the user's cart from a mock "database"
   const fetchUserCart = (userId) => {
@@ -75,22 +73,6 @@ const CourseCart = () => {
                 onRemove={() => handleRemove(course.id)}
               />
             ))}
-
-            {/* Back Button */}
-            <button
-              onClick={() => navigate("/courseSelect")}
-              style={{
-                marginTop: "20px",
-                padding: "10px 20px",
-                backgroundColor: "var(--color-accent)",
-                color: "white",
-                border: "none",
-                borderRadius: "8px",
-                cursor: "pointer",
-              }}
-            >
-              ← Back to Course Registration
-            </button>
           </>
         )}
       </CardComp>
@@ -98,4 +80,4 @@ const CourseCart = () => {
   );
 };
 
-export default CourseCart;
+export default UserCourses;
