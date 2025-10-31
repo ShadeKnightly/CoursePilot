@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import CardComp from "../../../components/card/cardComponent";
+import { useNavigate } from "react-router-dom";
 import "./Registration.css";
 
 const Registration = () => {
   const [term, setTerm] = useState("");
   const [status, setStatus] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,6 +20,10 @@ const Registration = () => {
     setStatus("Saving your term selection...");
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setStatus(`Term "${term}" successfully saved!`);
+
+    setTimeout(() => {
+      navigate("/courseSelect");
+    }, 1000);
   };
 
   return (
