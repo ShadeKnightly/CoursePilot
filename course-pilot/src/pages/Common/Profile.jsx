@@ -2,24 +2,19 @@ import React, { useState, useEffect } from "react";
 import CardComp from "../../components/card/cardComponent";
 
 const Profile = () => {
-  const [student, setStudent] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Simulated async fetch for now
-    const fetchStudentData = async () => {
-      const data = {
-        username: "Username",
-        firstName: "FirstName",
-        lastName: "LastName",
-        phone: "123-456-7890",
-        email: "email@email.com",
-        birthdate: "2000-11-20",
-        password: "123456",
-      };
-      setStudent(data);
-    };
-    fetchStudentData();
-  }, []);
+  const storedUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (storedUser) {
+    setUser(storedUser);
+  } else {
+    // Optional: redirect to sign-in if no user found
+    // navigate("/login");
+    setUser(null);
+  }
+}, []);
+
 
   // Simulate button logic
   const handleEditProfile = () => {
@@ -30,17 +25,17 @@ const Profile = () => {
     alert("Reset Password clicked");
   };
 
-  if (!student) return <p>Loading profile...</p>;
+  if (!user) return <p>Loading profile...</p>;
 
   return (
     <main style={{ padding: "2rem", flex: 1, display: "flex", justifyContent: "center" }}>
-      <CardComp title={`${student.username}'s Profile`}>
-        <div className="student-info">
-          <p><strong>Name:</strong> {student.firstName} {student.lastName}</p>
-          <p><strong>Phone:</strong> {student.phone}</p>
-          <p><strong>Email:</strong> {student.email}</p>
-          <p><strong>Birthdate:</strong> {student.birthdate}</p>
-          <p><strong>Password:</strong> {"*".repeat(student.password.length)}</p>
+      <CardComp title={`${user.username}'s Profile`}>
+        <div className="user-info">
+          <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
+          <p><strong>Phone:</strong> {user.phone}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Birthdate:</strong> {user.birthdate}</p>
+          <p><strong>Password:</strong> {"*".repeat(user.password.length)}</p>
         </div>
 
         <div className="button-container" style={{ marginTop: "2rem", textAlign: "right" }}>

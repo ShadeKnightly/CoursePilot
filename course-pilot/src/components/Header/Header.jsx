@@ -18,6 +18,9 @@ function Header() {
     setUser(null);
     navigate("/signup");
   };
+  const handleSignIn = () => {
+    navigate("/login");
+  }
 
   const handleSignUp = () => {
     navigate("/signup");
@@ -52,9 +55,14 @@ function Header() {
             </button>
           </>
         ) : (
+          <>
           <button onClick={handleSignUp} className="signup-link">
             Sign Up
           </button>
+          <button onClick={handleSignIn} className="signin-link">
+            Sign In
+          </button>
+          </>
         )}
       </div>
     </header>

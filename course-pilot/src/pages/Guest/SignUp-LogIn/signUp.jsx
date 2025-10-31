@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CardComp from "../../../components/card/cardComponent";
 import "./signUp.css"
+import { FaExpandArrowsAlt } from "react-icons/fa";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -45,7 +46,11 @@ const SignUp = () => {
     const newUser = { ...formData, studentId };
 
     // Save to localStorage (you could also store multiple users)
-    localStorage.setItem("studentUser", JSON.stringify(newUser));
+    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    existingUsers.push(newUser);
+
+    localStorage.setItem("users", JSON.stringify(existingUsers));
 
     setStatus("Sign Up successful! Redirecting...");
 
@@ -61,38 +66,38 @@ const SignUp = () => {
           <div className="form-section">
             <h3>Personal</h3>
             <div className="form-row">
-              <input name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} />
-              <input name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
+              <input className="SignUpInput" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} />
+              <input className="SignUpInput" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
             </div>
             <div className="form-row">
-              <input type="date" name="birthday" placeholder="Date of Birth" value={formData.birthday} onChange={handleChange} />
+              <input className="SignUpInput" type="date" name="birthday" placeholder="Date of Birth" value={formData.birthday} onChange={handleChange} />
             </div>
           </div>
 
           <div className="form-section">
             <h3>Contact Information</h3>
             <div className="form-row">
-              <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-              <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
+              <input className="SignUpInput" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
+              <input className="SignUpInput" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
             </div>
           </div>
 
           <div className="form-section">
             <h3>Account Information</h3>
             <div className="form-row">
-              <input name="program" placeholder="Program" value={formData.program} onChange={handleChange} />
-              <select name="department" value={formData.department} onChange={handleChange} disabled>
+              <input className="SignUpInput" name="program" placeholder="Program" value={formData.program} onChange={handleChange} />
+              <select className="signUpDepartSelect" name="department" value={formData.department} onChange={handleChange} disabled>
                 <option value="Software Development">Department</option>
               </select>
             </div>
             <div className="form-row">
-              <input name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
-              <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
+              <input className="SignUpInput" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
+              <input className="SignUpInput" type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
             </div>
           </div>
 
           <div className="form-actions">
-            <button type="submit">Submit</button>
+            <button className="submit" type="submit">Submit</button>
           </div>
 
           {status && <p className="status">{status}</p>}
