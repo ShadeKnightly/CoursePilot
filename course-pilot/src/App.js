@@ -13,29 +13,37 @@ import CourseSearch from "./pages/Student/courseSearch/course-search.jsx";
 // import Manage from "./pages/Manage";
 // import Contact from "./pages/Contact";
 import "./styles/Variables.css";
+import ViewPrograms from "./pages/Guest/viewPrograms/viewPrograms.jsx";
+
 
 function App() {
   return (
-    <Router>
-      <Background>
-        <Header />
-        <Menu />
+  <Router>
+  <Background>
+  <Header />
+  <Menu />
 
+  <div className="app-wrapper">
+    <main className="app-content">
         <Routes>
+
           <Route path="/" element={null} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/registration" element={<CourseSelection />} />
           <Route path="/cart" element={<CourseCart />} />
           <Route path="/search" element={<CourseSearch />} />
-
+          <Route path="/viewPrograms" element={<ViewPrograms />} />
 
           {/* <Route path="/manage" element={<Manage />} />
           <Route path="/contact" element={<Contact />} />  */}
-        </Routes>
 
-        <Footer />
-      </Background>
+         </Routes>
+        </main>
+
+       <Footer />
+      </div>
+    </Background>
     </Router>
   );
 }

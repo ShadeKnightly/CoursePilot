@@ -9,7 +9,15 @@
   margin: 20px auto;
   display: flex;
   flex-direction: column;
+
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+border: 1px solid #05A4FC;
 }
+
+
 
 .card-header {
   position: sticky;
@@ -56,10 +64,12 @@
   padding: 20px;
   text-align: center;
   color: #ddd;
+
 }
 
 .card-body::-webkit-scrollbar {
   width: 8px;
+ 
 }
 
 .card-body::-webkit-scrollbar-thumb {
@@ -70,3 +80,4 @@
 .card-body::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+
