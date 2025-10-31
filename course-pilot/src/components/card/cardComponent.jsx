@@ -7,7 +7,7 @@ const CardComp = ({ title, children }) => {
   const location = useLocation();
 
   // Only show icons on the Course Registration page
-  const showIcons = location.pathname === "/registration";
+  const showIcons = location.pathname === "/courseSelect";
 
   return (
     <div className="card">
