@@ -15,15 +15,20 @@ import SignUp from "./pages/Guest/SignUp/signUp.jsx";
 // import Manage from "./pages/Manage";
 // import Contact from "./pages/Contact";
 import "./styles/Variables.css";
+import ViewPrograms from "./pages/Guest/viewPrograms/viewPrograms.jsx";
+
 
 function App() {
   return (
-    <Router>
-      <Background>
-        <Header />
-        <Menu />
+  <Router>
+  <Background>
+  <Header />
+  <Menu />
 
+  <div className="app-wrapper">
+    <main className="app-content">
         <Routes>
+
           <Route path="/" element={null} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
@@ -33,15 +38,19 @@ function App() {
 
           <Route path="/cart" element={<CourseCart />} />
           <Route path="/search" element={<CourseSearch />} />
+          <Route path="/viewPrograms" element={<ViewPrograms />} />
           <Route path="/courses" element={<UserCourses />} />
 
 
           {/* <Route path="/manage" element={<Manage />} />
           <Route path="/contact" element={<Contact />} />  */}
-        </Routes>
 
-        <Footer />
-      </Background>
+         </Routes>
+        </main>
+
+       <Footer />
+      </div>
+    </Background>
     </Router>
   );
 }
