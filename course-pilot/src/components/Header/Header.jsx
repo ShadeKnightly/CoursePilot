@@ -77,7 +77,7 @@ function Header() {
             </button>
           </>
         ) : (
-
+        <>
           <button onClick={handleSignUp} className="header-button">
             Sign Up
           </button>
