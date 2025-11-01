@@ -34,7 +34,7 @@ const Profile = () => {
           <p><strong>Name:</strong> {user.firstName} {user.lastName}</p>
           <p><strong>Phone:</strong> {user.phone}</p>
           <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Birthdate:</strong> {user.birthdate}</p>
+          <p><strong>Birthdate:</strong> {user.birthday}</p>
           <p><strong>Password:</strong> {"*".repeat(user.password.length)}</p>
         </div>
 

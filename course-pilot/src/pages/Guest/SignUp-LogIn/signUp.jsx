@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CardComp from "../../../components/card/cardComponent";
 import "./signUp.css"
-import { FaExpandArrowsAlt } from "react-icons/fa";
+// import { FaExpandArrowsAlt } from "react-icons/fa";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const SignUp = () => {
     setStatus("Sign Up successful! Redirecting...");
 
     setTimeout(() => {
-      navigate("/dashboard");
+      navigate("/login");
     }, 1500);
   };
 
