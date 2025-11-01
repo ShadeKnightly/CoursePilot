@@ -37,6 +37,10 @@ function Header() {
     navigate("/login");
   }
 
+  const handleViewPrograms = () => {
+    navigate("/viewPrograms");
+  }
+
   const handleSignUp = () => {
     navigate("/signup");
   };
@@ -56,19 +60,25 @@ function Header() {
       <h1 className="title">Course Pilot</h1>
 
       <div className="header-right">
+
+        <button
+        onClick={handleViewPrograms} 
+        className="header-button"
+        style={{ marginRight: "10px" }}>
+        Programs
+        </button>
+
         {user ? (
           <>
             <button
               onClick={handleSignOut}
-              className="signup-link"
-              style={{ backgroundColor: "var(--color-orange)" }}
-            >
+              className="header-button">
               Sign Out
             </button>
           </>
         ) : (
-          <>
-          <button onClick={handleSignUp} className="signup-link">
+
+          <button onClick={handleSignUp} className="header-button">
             Sign Up
           </button>
           <button onClick={handleSignIn} className="signin-link">
