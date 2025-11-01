@@ -1,16 +1,20 @@
 .signup-page {
-  padding: 2rem;
+  padding: 1.5rem;
   display: flex;
   justify-content: center;
   flex: 1;
 }
 
+
 .signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 50%;
-    color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #fff;
+  align-items: center; /* centers all content inside form */
 }
 
 .form-section h3 {
@@ -26,8 +30,8 @@
   justify-content: space-between;
 }
 
-input,
-select {
+.SignUpInput,
+.signUpDepartSelect {
   flex: 1;
   margin: 0.6rem;
   padding: 0.6rem;
@@ -41,18 +45,18 @@ select {
   transition: 0.2s ease;
 }
 
-input:focus,
-select:focus {
+.SignUpInput:focus,
+.signUpDepartSelect:focus {
   border-color: #00c6ff;
   box-shadow: 0 0 5px rgba(0, 198, 255, 0.5);
 }
 
-select:disabled {
+.signUpDepartSelect:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-button {
+.submit {
   background-color: var(--color-orange);
   color: white;
   border: none;
@@ -64,18 +68,18 @@ button {
   width: 150px;
 }
 
-button:hover {
+.submit:hover {
   background-color: #ffb347;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 1rem;
+  margin-top: .5rem;
 }
 
 .status {
   text-align: center;
   color: var(--color-accent, #00c6ff);
-  margin-top: 1rem;
+  margin-top: .5rem;
 }

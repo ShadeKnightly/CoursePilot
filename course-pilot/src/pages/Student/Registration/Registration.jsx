@@ -6,7 +6,6 @@ import "./Registration.css";
 const Registration = () => {
   const [term, setTerm] = useState("");
   const [status, setStatus] = useState("");
-
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,6 +18,22 @@ const Registration = () => {
 
     setStatus("Saving your term selection...");
     await new Promise((resolve) => setTimeout(resolve, 1500));
+    setStatus(`Term "${term}" successfully saved!`);
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if(!currentUser){
+      setStatus("No active user found. Please sign in again.");
+      return;
+    }
+    const updatedUser = { ...currentUser, selectedTerm: term };
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const updatedUsers = users.map((u) =>
+      u.username === currentUser.username ? updatedUser : u
+    );
+    localStorage.setItem("users", JSON.stringify(updatedUsers));
+
     setStatus(`Term "${term}" successfully saved!`);
 
     setTimeout(() => {
@@ -37,7 +52,7 @@ const Registration = () => {
             </p>
 
             <form className="registration-form" onSubmit={handleSubmit}>
-              <select
+              <select className="RegFormTermSelect"
                 value={term}
                 onChange={(e) => setTerm(e.target.value)}
               >
@@ -48,7 +63,7 @@ const Registration = () => {
                 <option value="Winter">Winter: Jan–Mar</option>
               </select>
 
-              <button type="submit">Submit</button>
+              <button className="RegSubmit" type="submit">Submit</button>
             </form>
 
             {status && <p className="status">{status}</p>}
