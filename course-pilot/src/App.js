@@ -15,7 +15,7 @@ import SignUp from "./pages/Guest/SignUp/signUp.jsx";
 // import Manage from "./pages/Manage";
 // import Contact from "./pages/Contact";
 import "./styles/Variables.css";
-import ViewPrograms from "./pages/Guest/viewPrograms/viewPrograms.jsx";
+import ViewPrograms from "./pages/Common/viewPrograms/viewPrograms.jsx";
 
 
 function App() {
