@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CardComp from "../../../components/card/cardComponent";
 import ClassItem from "../../../components/ClassItem/classItem";
-import DropDownFilter from "../../../components/DropDownFilter/dropDown";
 import SearchBox from "../../../components/Search/search";
 import "./courseSearch.css";
 
 const CourseSearch = () => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [searchField, setSearchField] = useState("");
 
   // Simulate fetching courses from mock database
   const fetchAllCourses = () => {
@@ -123,7 +125,7 @@ const CourseSearch = () => {
             startEnd: "Sept 1 - Dec 15",
             program: "Software Development",
             description:
-              "Apply all learned skills in a team-based final project with real-world clients.",
+            "Apply all learned skills in a team-based final project with real-world clients.",
           },
           {
             id: 12,
@@ -133,55 +135,48 @@ const CourseSearch = () => {
             startEnd: "Mar 1 - Jun 15",
             program: "Information Technology",
             description:
-              "Understand the principles of modern operating systems including memory management and scheduling.",
+            "Understand the principles of modern operating systems including memory management and scheduling.",
           },
         ];
-
-
         resolve(mockDatabase);
       }, 1000);
     });
   };
-
-  const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
-  const [searchField, setSearchField] = useState("");
-  const [selectedTerm, setSelectedTerm] = useState("");
-
-  // Fetch courses once on mount
+  
+  // Fetch courses and user
   useEffect(() => {
-    fetchAllCourses().then((data) => setCourses(data));
-  }, []);
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) {
+      navigate("/signin");
+      return;
+    }
+    const userTerm = currentUser?.selectedTerm || ""; // example: "Fall 2025"
+
+    fetchAllCourses().then((data) => {
+      // Filter by user term immediately
+      const filteredByTerm = data.filter((course) => course.term.toLowerCase().includes(userTerm.toLowerCase())
+      );
+      setCourses(filteredByTerm);
+      setFilteredCourses(filteredByTerm);
+    });
+  }, [navigate]);
 
   // One unified filtering effect (for search + dropdown)
   useEffect(() => {
     if (!courses.length) return;
 
     const searchValue = searchField.toLowerCase();
-    const termValue = selectedTerm.toLowerCase();
 
-    const filtered = courses.filter((course) => {
+    const filtered = courses.filter((course) => 
       // Search in any field, handles undefined fields safely
-      const values = Object.values(course)
-        .join(" ")
-        .toLowerCase();
-
-      const matchesSearch = values.includes(searchValue);
-      const matchesTerm = termValue
-        ? course.term.toLowerCase().includes(termValue)
-        : true;
-
-      return matchesSearch && matchesTerm;
-    });
-
+      Object.values(course).join(" ").toLowerCase().includes(searchValue)
+    );
+    
     setFilteredCourses(filtered);
-  }, [courses, searchField, selectedTerm]);
+  }, [courses, searchField]);
 
   // handlers
-  const onSearchChange = (event) =>
-    setSearchField(event.target.value.toLowerCase());
-  const onTermChange = (event) =>
-    setSelectedTerm(event.target.value.toLowerCase());
+  const onSearchChange = (event) => setSearchField(event.target.value);
 
   const handleRemove = (courseId) => {
     console.log(`Removed course with ID: ${courseId}`);
@@ -195,7 +190,6 @@ const CourseSearch = () => {
           <p>Loading your courses...</p>
         ) : (
           <>
-            {/* <DropDownFilter onChangeHandler={onTermChange} value={selectedTerm} /> */}
             <SearchBox placeholder="Search" onChangeHandler={onSearchChange} />
             <button className="BackToReg" onClick={() => navigate("/courseSelect")}>
               ← Back to Course Registration
