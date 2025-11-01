@@ -1,0 +1,83 @@
+
+.view-programs-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.program-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 25px;
+  width: 100%;
+  max-width: 1800px;
+}
+
+.program-description {
+  font-size: 0.95rem;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.program-grid {
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  gap: 20px;
+  margin-bottom: 15px;
+  align-Items: start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.program-grid-left {
+  display: flex;
+  flex-direction:column;
+  gap: 5px;
+  padding-top: 1-px;
+}
+
+.card-fees {
+  margin:auto;
+  display:inline-block;
+  justify-content:center;
+  vertical-align: center;
+  border-radius: 10px;
+  background: linear-gradient(45deg, #6C4CDA 0%, #4500b5 50%);
+  color: white;
+  font-weight: 500;
+  font-size: 0.9rem;
+  min-width: 200px;
+  min-height: 200px;
+}
+
+
+
+
+@media (max-width: 768px) {
+  .program-container {
+    grid-template-columns: 1fr;
+  }
+
+  .card-fees {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+
+  }
+}
+
+
+.program-card-short {
+  height: 100px;
+  overflow:scroll
+}
+
+.program-card-short .card-body {
+  padding: 1.25rem; 
+}
+

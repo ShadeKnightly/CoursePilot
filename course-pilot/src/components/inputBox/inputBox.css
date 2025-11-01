@@ -1,0 +1,37 @@
+.input-box {
+  padding: 12px 16px;
+  width: 100%;
+  max-width: 713px;
+  background: #071F66;
+  border: 1px solid #05A4FC;
+  border-radius: 8px;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.input-label {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #05A4FC;
+   margin-bottom: 0.5rem;
+}
+
+.input-box-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+
+.textarea-box {
+  resize: none;
+  min-height: 195px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: inherit;
+}
+
+.large-input-box .input-box {
+  min-height: 100px;
+  text-wrap:true;
+}
