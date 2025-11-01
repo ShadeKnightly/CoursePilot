@@ -197,7 +197,7 @@ const CourseSearch = () => {
           <>
             {/* <DropDownFilter onChangeHandler={onTermChange} value={selectedTerm} /> */}
             <SearchBox placeholder="Search" onChangeHandler={onSearchChange} />
-            <button onClick={() => navigate("/courseSelect")}>
+            <button className="BackToReg" onClick={() => navigate("/courseSelect")}>
               ← Back to Course Registration
             </button>
 

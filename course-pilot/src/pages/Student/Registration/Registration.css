@@ -22,7 +22,7 @@
   gap: 1rem;
 }
 
-.registration-form select {
+.registration-form .RegFormTermSelect {
   padding: 0.5rem;
   border-radius: 6px;
   border: 1px solid var(--color-accent);
@@ -32,7 +32,7 @@
   text-align: center;
 }
 
-.registration-form button {
+.registration-form .RegSubmit {
   background-color: var(--color-orange);
   color: #fff;
   padding: 0.5rem 1rem;

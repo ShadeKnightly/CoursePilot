@@ -4,7 +4,7 @@ import './dropDown.css'
 
 const DropDownFilter = ({ onChangeHandler, value }) => {
     return (
-        <select onChange={onChangeHandler} value={value}>
+        <select className="FilterSelect" onChange={onChangeHandler} value={value}>
             <option value="">Select a Term</option>
             <option value="spring">Spring: Mar–Jun</option>
             <option value="summer">Summer: Jun–Aug</option>

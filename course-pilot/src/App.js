@@ -11,7 +11,8 @@ import CourseSelection from "./pages/Student/courseSelection.jsx";
 import CourseCart from "./pages/Student/course-cart.jsx";
 import CourseSearch from "./pages/Student/courseSearch/course-search.jsx";
 import UserCourses from "./pages/Student/yourCourses.jsx";
-import SignUp from "./pages/Guest/SignUp/signUp.jsx";
+import SignUp from "./pages/Guest/SignUp-LogIn/signUp.jsx";
+import LogIn from "./pages/Guest/SignUp-LogIn/logIn.jsx";
 // import Manage from "./pages/Manage";
 // import Contact from "./pages/Contact";
 import "./styles/Variables.css";
@@ -31,6 +32,8 @@ function App() {
 
           <Route path="/" element={null} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<LogIn />} />
+
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/registration" element={<Registration />} />

@@ -37,7 +37,7 @@ const Registration = () => {
             </p>
 
             <form className="registration-form" onSubmit={handleSubmit}>
-              <select
+              <select className="RegFormTermSelect"
                 value={term}
                 onChange={(e) => setTerm(e.target.value)}
               >
@@ -48,7 +48,7 @@ const Registration = () => {
                 <option value="Winter">Winter: Jan–Mar</option>
               </select>
 
-              <button type="submit">Submit</button>
+              <button className="RegSubmit" type="submit">Submit</button>
             </form>
 
             {status && <p className="status">{status}</p>}
