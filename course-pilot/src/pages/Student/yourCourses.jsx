@@ -16,7 +16,7 @@ const UserCourses = () => {
       return;
     }
 
-    const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
+    const storedData = JSON.parse(localStorage.getItem("registeredCourses")) || {};
     const userCourseIds = storedData[currentUser.id] || [];
 
     // Match IDs to full course objects
@@ -40,7 +40,7 @@ const UserCourses = () => {
 
   return (
     <main style={{ padding: "2rem" }}>
-      <CardComp title={`Your Cart`}>
+      <CardComp title={`Your Courses`}>
         {courses.length === 0 ? (
           <p>Loading your courses...</p>
         ) : (

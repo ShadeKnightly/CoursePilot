@@ -136,6 +136,7 @@ export const users = [
     role: "admin",
   },
   {
+    id: 2,
     firstName: "Guy",
     lastName: "Dude",
     email: "realEmail@email.com",
