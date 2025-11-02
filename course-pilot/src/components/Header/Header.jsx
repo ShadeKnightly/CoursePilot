@@ -17,7 +17,7 @@ function Header() {
   };
 
   const handleViewCourses = () => {
-    navigate("/search");
+    navigate("/viewCourses");
   }
 
   const handleViewPrograms = () => {
