@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../../context/UserContext";
 import CardComp from "../../../components/card/cardComponent";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,12 @@ const Registration = () => {
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useContext(UserContext);
+
+  useEffect(() => {
+    if (currentUser?.selectedTerm) {
+      navigate("/courseSelect");
+    }
+  }, [currentUser, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +48,8 @@ const Registration = () => {
       navigate("/courseSelect");
     }, 1000);
   };
+  
+  if (currentUser?.selectedTerm) return null;
 
   return (
     <main className="registration-page">

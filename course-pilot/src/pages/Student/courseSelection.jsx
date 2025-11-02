@@ -11,17 +11,30 @@ const CourseSelection = () => {
 
   const [courses, setCourses] = useState([]);
   const [userTerm, setUserTerm] = useState("");
-  
-  // Mocked data fetch
+  const [userCourses, setUserCourses] = useState([]);
 
-const fetchAllCourses = () => {
-  return new Promise((resolve) => {
-    console.log("Fetching all available courses...");
-    setTimeout(() => {
-      resolve(mockCourses);
-    }, 1000);
-  });
-};
+  // retrieve all mock courses
+  const fetchAllCourses = () => {
+    return new Promise((resolve) => {
+      console.log("Fetching all available courses...");
+      setTimeout(() => {
+        resolve(mockCourses);
+      }, 500);
+    });
+  };
+  // Load user courses from localStorage
+  const loadUserCourses = (userId) => {
+    const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
+    return storedData[userId] || [];
+  };
+  
+  // Save updated user courses to localStorage
+  const saveUserCourses = (userId, courses) => {
+    const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
+    storedData[userId] = courses;
+    localStorage.setItem("userCourses", JSON.stringify(storedData));
+  };
+
 useEffect(() => {
     // Check if user is signed in
     if (!currentUser) {
@@ -31,6 +44,10 @@ useEffect(() => {
 
     const selectedTerm = currentUser?.selectedTerm || "";
     setUserTerm(selectedTerm);
+
+    // Load user’s current course selections
+    const existingCourses = loadUserCourses(currentUser.id);
+    setUserCourses(existingCourses)
 
     // Fetch and filter courses by term
     fetchAllCourses().then((data) => {
@@ -42,11 +59,19 @@ useEffect(() => {
   }, [navigate, currentUser]);
 
   const handleAdd = (courseId) => {
-    console.log(`Added course with ID: ${courseId}`);
+    if (!userCourses.includes(courseId)) {
+      const updated = [...userCourses, courseId];
+      setUserCourses(updated);
+      saveUserCourses(currentUser.id, updated);
+      console.log(`Added course ID: ${courseId}`);
+    }
   };
 
   const handleRemove = (courseId) => {
-    console.log(`Removed course with ID: ${courseId}`);
+    const updated = userCourses.filter((id) => id !== courseId);
+    setUserCourses(updated);
+    saveUserCourses(currentUser.id, updated);
+    console.log(`Removed course ID: ${courseId}`);
   };
   
   return (
@@ -76,6 +101,7 @@ useEffect(() => {
                 description={course.description}
                 onAdd={() => handleAdd(course.id)}
                 onRemove={() => handleRemove(course.id)}
+                isSignedIn={!!currentUser} //convert null/undefined to false valid user object into true.
               />
             ))}
           </>
