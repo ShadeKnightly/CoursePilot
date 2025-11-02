@@ -10,6 +10,8 @@ const CourseSearch = () => {
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchField, setSearchField] = useState("");
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
 
   // Simulate fetching courses from mock database
   const fetchAllCourses = () => {
@@ -143,13 +145,9 @@ const CourseSearch = () => {
     });
   };
   
-  // Fetch courses and user
-  useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (!currentUser) {
-      navigate("/signin");
-      return;
-    }
+  
+  useEffect(() =>{
+
     const userTerm = currentUser?.selectedTerm || ""; // example: "Fall 2025"
 
     fetchAllCourses().then((data) => {
@@ -185,16 +183,21 @@ const CourseSearch = () => {
 
   return (
     <main style={{ padding: "2rem" }}>
-      <CardComp title="Search Courses">
+       <CardComp title={currentUser ? "Search Courses" : "All Courses"}>
         {courses.length === 0 ? (
-          <p>Loading your courses...</p>
-        ) : (
+          <p>{currentUser ? "Loading your courses..." : "Loading courses..."}</p>
+      ) : (
           <>
             <SearchBox placeholder="Search" onChangeHandler={onSearchChange} />
-            <button className="BackToReg" onClick={() => navigate("/courseSelect")}>
+             {/* Only back button if a user is signed in */}
+          {currentUser && (
+            <button
+              className="BackToReg"
+              onClick={() => navigate("/courseSelect")}
+            >
               ← Back to Course Registration
             </button>
-
+          )}
             {filteredCourses.length > 0 ? (
               filteredCourses.map((course) => (
                 <ClassItem
@@ -206,6 +209,7 @@ const CourseSearch = () => {
                   program={course.program}
                   description={course.description}
                   onRemove={() => handleRemove(course.id)}
+                  isSignedIn={!!currentUser} //convert null/undefined to false valid user object into true.
                 />
               ))
             ) : (
