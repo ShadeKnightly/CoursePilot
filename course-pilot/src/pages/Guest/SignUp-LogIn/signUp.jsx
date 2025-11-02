@@ -44,7 +44,7 @@ const SignUp = () => {
     const studentId = "S" + Math.floor(Math.random() * 1000000).toString();
 
     // Create user object
-    const newUser = { ...formData, studentId, role: "student" };
+    const newUser = { ...formData, id: Date.now, studentId, role: "student" };
 
     // Save to localStorage (you could also store multiple users)
     const existingUsers = JSON.parse(localStorage.getItem("users")) || [];

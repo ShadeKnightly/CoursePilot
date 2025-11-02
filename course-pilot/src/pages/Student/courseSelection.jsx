@@ -25,17 +25,20 @@ const CourseSelection = () => {
   // Load user courses from localStorage
   const loadUserCourses = (userId) => {
     const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
-    return storedData[userId] || [];
+    const userData = storedData[userId] || { cart: [], registered: [] };
+    return Array.isArray(userData.cart) ? userData.cart : [];
   };
-  
+
   // Save updated user courses to localStorage
-  const saveUserCourses = (userId, courses) => {
+  const saveUserCourses = (userId, updatedCart) => {
     const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
-    storedData[userId] = courses;
+    const userData = storedData[userId] || { cart: [], registered: [] };
+    storedData[userId] = { ...userData, cart: updatedCart };
     localStorage.setItem("userCourses", JSON.stringify(storedData));
   };
 
-useEffect(() => {
+
+  useEffect(() => {
     // Check if user is signed in
     if (!currentUser) {
       navigate("/login");
@@ -73,7 +76,7 @@ useEffect(() => {
     saveUserCourses(currentUser.id, updated);
     console.log(`Removed course ID: ${courseId}`);
   };
-  
+
   return (
     <main style={{ padding: "2rem" }}>
       <CardComp title={`Course Selection`}>
@@ -102,6 +105,7 @@ useEffect(() => {
                 onAdd={() => handleAdd(course.id)}
                 onRemove={() => handleRemove(course.id)}
                 isSignedIn={!!currentUser} //convert null/undefined to false valid user object into true.
+                isInCart={userCourses?.includes(course.id)}//checks if course is in users cart
               />
             ))}
           </>
