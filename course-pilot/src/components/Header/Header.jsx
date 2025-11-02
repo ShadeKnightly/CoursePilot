@@ -1,44 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useContext} from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 import "./Header.css";
 import logo from "../../assets/bvc_logo.png";
 
 function Header() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [user, setUser] = useState(null);
-
-    
-  // Load user from localStorage on mount or when route changes
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-    setUser(storedUser);
-
-    
-  }, [location]);
-  
-  useEffect(()=>{
-    const handleStorageChhange = () =>{
-      const updatedUser = JSON.parse(localStorage.getItem("currentUser"));
-      setUser(updatedUser);
-    };
-    
-    window.addEventListener("storage", handleStorageChhange);
-    return () => window.removeEventListener("storage", handleStorageChhange);
-    
-  }, []);
+  const {currentUser, setCurrentUser} = useContext(UserContext);
 
   const handleSignOut = () => {
     localStorage.removeItem("currentUser");
-    setUser(null);
-    navigate("/viewPrograms");
-  };
-  const handleSignIn = () => {
-    navigate("/login");
-  }
+    setCurrentUser(null);
 
-  const handleSignUp = () => {
-    navigate("/signup");
+    setTimeout(() => {
+      navigate("/viewPrograms");
+    }, 0);
   };
 
   return (
@@ -56,7 +32,7 @@ function Header() {
       <h1 className="title">Course Pilot</h1>
 
       <div className="header-right">
-        {user ? (
+        {currentUser ? (
           <>
             <button
               onClick={handleSignOut}
@@ -68,10 +44,10 @@ function Header() {
           </>
         ) : (
           <>
-          <button onClick={handleSignUp} className="signup-link">
+          <button onClick={() => navigate("/signup")} className="signup-link">
             Sign Up
           </button>
-          <button onClick={handleSignIn} className="signin-link">
+          <button onClick={() => navigate("/login")} className="signin-link">
             Sign In
           </button>
           </>

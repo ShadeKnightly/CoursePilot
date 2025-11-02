@@ -1,20 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 import CardComp from "../../components/card/cardComponent";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-  const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (storedUser) {
-    setUser(storedUser);
-  } else {
-    // Optional: redirect to sign-in if no user found
-    // navigate("/login");
-    setUser(null);
-  }
-}, []);
-
+  const { currentUser } = useContext(UserContext);
+  const user = currentUser;
 
   // Simulate button logic
   const handleEditProfile = () => {
