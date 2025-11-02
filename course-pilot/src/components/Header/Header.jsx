@@ -33,12 +33,17 @@ function Header() {
     setUser(null);
     navigate("/viewPrograms");
   };
-  const handleSignIn = () => {
-    navigate("/login");
+
+  const handleViewCourses = () => {
+    navigate("/search");
   }
 
   const handleViewPrograms = () => {
     navigate("/viewPrograms");
+  }
+
+  const handleSignIn = () => {
+    navigate("/login");
   }
 
   const handleSignUp = () => {
@@ -68,6 +73,13 @@ function Header() {
         Programs
         </button>
 
+        <button
+        onClick={handleViewCourses}
+        className="header-button"
+        style={{}}>
+        Courses
+        </button>
+
         {user ? (
           <>
             <button
@@ -77,8 +89,12 @@ function Header() {
             </button>
           </>
         ) : (
+<<<<<<< HEAD
 
           <>
+=======
+        <>
+>>>>>>> main
           <button onClick={handleSignUp} className="header-button">
             Sign Up
           </button>
