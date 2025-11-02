@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { UserContext } from "../../../context/UserContext";
 import CardComp from "../../../components/card/cardComponent";
 import { useNavigate } from "react-router-dom";
 import "./Registration.css";
@@ -7,6 +8,7 @@ const Registration = () => {
   const [term, setTerm] = useState("");
   const [status, setStatus] = useState("");
   const navigate = useNavigate();
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,12 +22,12 @@ const Registration = () => {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setStatus(`Term "${term}" successfully saved!`);
 
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if(!currentUser){
       setStatus("No active user found. Please sign in again.");
       return;
     }
     const updatedUser = { ...currentUser, selectedTerm: term };
+    setCurrentUser(updatedUser);
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
 
     const users = JSON.parse(localStorage.getItem("users")) || [];

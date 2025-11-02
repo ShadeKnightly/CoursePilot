@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
 import "./Menu.css";
 import { Link } from "react-router-dom";
 
-function Menu({ isAdmin }) {
+function Menu() {
+  // grab the current user from our context and check which role it is
+  const { currentUser } = useContext(UserContext);
+  const isAdmin = currentUser?.role === "admin";
+
+  if(currentUser){
   return (
     <nav className="menu">
       <ul>
@@ -10,9 +16,9 @@ function Menu({ isAdmin }) {
         <li><Link to="/profile">View Profile</Link></li>
         {isAdmin ? (
           <>
-            <li><Link to="/courses">Courses</Link></li>
-            <li><Link to="/students">Students</Link></li>
-            <li><Link to="/messages">Messages</Link></li>
+            <li><Link to="/courses">Manage Courses</Link></li>
+            <li><Link to="/students">Manage Students</Link></li>
+            <li><Link to="/messages">View Messages</Link></li>
           </>
         ) : (
           <>
@@ -24,6 +30,7 @@ function Menu({ isAdmin }) {
       </ul>
     </nav>
   );
+}
 }
 
 export default Menu;

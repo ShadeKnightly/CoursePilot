@@ -1,11 +1,16 @@
 import React, { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import CardComp from "../../../components/card/cardComponent";
 import "./signUp.css"
+import { users as mockUsers } from "../../../data";
+
 
 const LogIn = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState("");
+  const { setCurrentUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -37,10 +42,12 @@ const LogIn = () => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Retrieve all users
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    const allUsers = [...mockUsers, ...storedUsers];
 
     // Find user that matches email/username + password
-    const matchedUser = users.find(
+    const matchedUser = allUsers.find(
       (u) =>
         (u.email === formData.email || u.username === formData.email) &&
         u.password === formData.password
@@ -53,8 +60,10 @@ const LogIn = () => {
 
     // Save logged-in user to current session
     localStorage.setItem("currentUser", JSON.stringify(matchedUser));
+    setCurrentUser(matchedUser); // triggers rerender globally
 
-    setStatus("Sign In successful! Redirecting...");
+
+    setStatus(`Welcome back, ${matchedUser.username || matchedUser.email}!`);
     
 
     setTimeout(() => {

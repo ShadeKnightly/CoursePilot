@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { UserProvider } from "./context/UserContext";
 import Header from "./components/Header/Header";
 import Background from "./components/Background/Background";
 import Menu from "./components/Menu/Menu";
@@ -20,41 +21,44 @@ import ViewPrograms from "./pages/Common/viewPrograms/viewPrograms.jsx";
 
 
 function App() {
+
   return (
-  <Router>
-  <Background>
-  <Header />
-  <Menu />
+    <UserProvider>
+      <Router>
+        <Background>
+          <Header />
+          <Menu />
 
-  <div className="app-wrapper">
-    <main className="app-content">
-        <Routes>
+          <div className="app-wrapper">
+            <main className="app-content">
+              <Routes>
 
-          <Route path="/" element={null} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/login" element={<LogIn />} />
+                <Route path="/" element={<ViewPrograms />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/login" element={<LogIn />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/registration" element={<Registration />} />
-          <Route path="/courseSelect" element={<CourseSelection />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/registration" element={<Registration />} />
+                <Route path="/courseSelect" element={<CourseSelection />} />
 
-          <Route path="/cart" element={<CourseCart />} />
-          <Route path="/search" element={<CourseSearch />} />
-          <Route path="/viewPrograms" element={<ViewPrograms />} />
-          <Route path="/courses" element={<UserCourses />} />
-          <Route path="/contact" element={<Contact />} />
+                <Route path="/cart" element={<CourseCart />} />
+                <Route path="/search" element={<CourseSearch />} />
+                <Route path="/viewPrograms" element={<ViewPrograms />} />
+                <Route path="/courses" element={<UserCourses />} />
+                <Route path="/contact" element={<Contact />} />
 
-          {/* <Route path="/manage" element={<Manage />} />
+                {/* <Route path="/manage" element={<Manage />} />
             */}
 
-         </Routes>
-        </main>
+              </Routes>
+            </main>
 
-       <Footer />
-      </div>
-    </Background>
-    </Router>
+            <Footer />
+          </div>
+        </Background>
+      </Router>
+    </UserProvider>
   );
 }
 

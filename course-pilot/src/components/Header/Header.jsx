@@ -1,37 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useContext} from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 import "./Header.css";
 import logo from "../../assets/bvc_logo.png";
 
 function Header() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [user, setUser] = useState(null);
-
-    
-  // Load user from localStorage on mount or when route changes
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("currentUser"));
-    setUser(storedUser);
-
-    
-  }, [location]);
-  
-  useEffect(()=>{
-    const handleStorageChhange = () =>{
-      const updatedUser = JSON.parse(localStorage.getItem("currentUser"));
-      setUser(updatedUser);
-    };
-    
-    window.addEventListener("storage", handleStorageChhange);
-    return () => window.removeEventListener("storage", handleStorageChhange);
-    
-  }, []);
+  const {currentUser, setCurrentUser} = useContext(UserContext);
 
   const handleSignOut = () => {
     localStorage.removeItem("currentUser");
-    setUser(null);
-    navigate("/viewPrograms");
+    setCurrentUser(null);
+    setTimeout(() => {
+      navigate("/viewPrograms");
+    }, 0);
   };
 
   const handleViewCourses = () => {
@@ -41,13 +23,6 @@ function Header() {
   const handleViewPrograms = () => {
     navigate("/viewPrograms");
   }
-
-  const handleSignIn = () => {
-    navigate("/login");
-  }
-
-  const handleSignUp = () => {
-    navigate("/signup");
   };
 
   return (
@@ -65,6 +40,7 @@ function Header() {
       <h1 className="title">Course Pilot</h1>
 
       <div className="header-right">
+        
 
         <button
         onClick={handleViewPrograms} 
@@ -80,7 +56,7 @@ function Header() {
         Courses
         </button>
 
-        {user ? (
+        {currentUser ? (
           <>
             <button
               onClick={handleSignOut}
@@ -89,16 +65,11 @@ function Header() {
             </button>
           </>
         ) : (
-<<<<<<< HEAD
-
-          <>
-=======
         <>
->>>>>>> main
-          <button onClick={handleSignUp} className="header-button">
+          <button onClick={() => navigate("/signup")} className="header-button">
             Sign Up
           </button>
-          <button onClick={handleSignIn} className="signin-link">
+          <button onClick={() => navigate("/login")} className="signin-link">
             Sign In
           </button>
           </>
