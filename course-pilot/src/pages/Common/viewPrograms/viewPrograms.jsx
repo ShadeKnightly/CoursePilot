@@ -5,8 +5,6 @@ import InputBox, { LargeInputBox } from "../../../components/inputBox/inputBox";
 import "./viewPrograms.css";
 
 
-import "./viewPrograms.css";
-
 const fetchAllPrograms = () => {
   return new Promise((resolve) => {
     setTimeout(() => {

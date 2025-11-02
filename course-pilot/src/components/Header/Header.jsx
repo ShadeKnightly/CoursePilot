@@ -11,10 +11,18 @@ function Header() {
   const handleSignOut = () => {
     localStorage.removeItem("currentUser");
     setCurrentUser(null);
-
     setTimeout(() => {
       navigate("/viewPrograms");
     }, 0);
+  };
+
+  const handleViewCourses = () => {
+    navigate("/search");
+  }
+
+  const handleViewPrograms = () => {
+    navigate("/viewPrograms");
+  }
   };
 
   return (
@@ -32,19 +40,33 @@ function Header() {
       <h1 className="title">Course Pilot</h1>
 
       <div className="header-right">
+        
+
+        <button
+        onClick={handleViewPrograms} 
+        className="header-button"
+        style={{ marginRight: "10px" }}>
+        Programs
+        </button>
+
+        <button
+        onClick={handleViewCourses}
+        className="header-button"
+        style={{}}>
+        Courses
+        </button>
+
         {currentUser ? (
           <>
             <button
               onClick={handleSignOut}
-              className="signup-link"
-              style={{ backgroundColor: "var(--color-orange)" }}
-            >
+              className="header-button">
               Sign Out
             </button>
           </>
         ) : (
-          <>
-          <button onClick={() => navigate("/signup")} className="signup-link">
+        <>
+          <button onClick={() => navigate("/signup")} className="header-button">
             Sign Up
           </button>
           <button onClick={() => navigate("/login")} className="signin-link">

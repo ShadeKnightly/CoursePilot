@@ -17,7 +17,7 @@ import LogIn from "./pages/Guest/SignUp-LogIn/logIn.jsx";
 // import Manage from "./pages/Manage";
 import Contact from "./pages/Student/contactPage/contactPage.jsx";
 import "./styles/Variables.css";
-import ViewPrograms from "./pages/Guest/viewPrograms/viewPrograms.jsx";
+import ViewPrograms from "./pages/Common/viewPrograms/viewPrograms.jsx";
 
 
 function App() {
