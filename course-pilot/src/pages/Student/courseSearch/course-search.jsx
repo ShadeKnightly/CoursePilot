@@ -15,7 +15,6 @@ const CourseSearch = () => {
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchField, setSearchField] = useState("");
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
 
   // Simulate fetching courses from mock database

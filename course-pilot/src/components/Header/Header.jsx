@@ -23,7 +23,6 @@ function Header() {
   const handleViewPrograms = () => {
     navigate("/viewPrograms");
   }
-  };
 
   return (
     <header className="header">
