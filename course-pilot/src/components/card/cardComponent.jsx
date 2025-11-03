@@ -3,8 +3,7 @@ import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import "./cardComp.css";
 import { Link, useLocation } from "react-router-dom";
 
-// added headerComponent prop for the search bar inside of cardComponent in Admin Courses
-const CardComp = ({ title,headerComponent, actionButton, children }) => {
+const CardComp = ({ title, children }) => {
   const location = useLocation();
 
   // Only show icons on the Course Registration page
@@ -14,14 +13,6 @@ const CardComp = ({ title,headerComponent, actionButton, children }) => {
     <div className="card">
       <div className="card-header">
         <h2 className="card-title">{title}</h2>
-        <div className="card-header-search-bar">
-          {headerComponent}
-        </div>
-        <div className="card-header-action">
-          {actionButton}
-        </div>
-        
-
         {showIcons && (
           <div className="card-icons">
             <Link to="/search" className="icon-button">
