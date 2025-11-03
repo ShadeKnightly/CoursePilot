@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "StudentFilterPanel.css";
+import "./StudentFilterPanel.css";
 // Import your styling file here (e.g., './StudentFilterPanel.css')
 
 const StudentFilterPanel = ({ onFilter, onAddStudent }) => {
