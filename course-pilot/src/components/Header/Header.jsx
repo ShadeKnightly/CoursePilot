@@ -1,27 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext} from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 import "./Header.css";
 import logo from "../../assets/bvc_logo.png";
 
 function Header() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
-  // Load user from localStorage on mount
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("studentUser"));
-    setUser(storedUser);
-  }, []);
+  const {currentUser, setCurrentUser} = useContext(UserContext);
 
   const handleSignOut = () => {
-    localStorage.removeItem("studentUser");
-    setUser(null);
-    navigate("/signup");
+    localStorage.removeItem("currentUser");
+    setCurrentUser(null);
+    setTimeout(() => {
+      navigate("/viewPrograms");
+    }, 0);
   };
 
-  const handleSignUp = () => {
-    navigate("/signup");
-  };
+  const handleViewCourses = () => {
+    navigate("/viewCourses");
+  }
+
+  const handleViewPrograms = () => {
+    navigate("/viewPrograms");
+  }
 
   return (
     <header className="header">
@@ -38,23 +39,39 @@ function Header() {
       <h1 className="title">Course Pilot</h1>
 
       <div className="header-right">
-        {user ? (
+        
+
+        <button
+        onClick={handleViewPrograms} 
+        className="header-button"
+        style={{ marginRight: "10px" }}>
+        Programs
+        </button>
+
+        <button
+        onClick={handleViewCourses}
+        className="header-button"
+        style={{}}>
+        Courses
+        </button>
+
+        {currentUser ? (
           <>
-            <span style={{ marginRight: "10px", fontWeight: "500" }}>
-              Welcome, {user.firstName}
-            </span>
             <button
               onClick={handleSignOut}
-              className="signup-link"
-              style={{ backgroundColor: "var(--color-orange)" }}
-            >
+              className="header-button">
               Sign Out
             </button>
           </>
         ) : (
-          <button onClick={handleSignUp} className="signup-link">
+        <>
+          <button onClick={() => navigate("/signup")} className="header-button">
             Sign Up
           </button>
+          <button onClick={() => navigate("/login")} className="signin-link">
+            Sign In
+          </button>
+          </>
         )}
       </div>
     </header>

@@ -1,62 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/UserContext";
 import CardComp from "../../components/card/cardComponent";
 import ClassItem from "../../components/ClassItem/classItem";
+import { mockCourses } from "../../data";
 
 const UserCourses = () => {
-
-  // Simulate fetching the user's cart from a mock "database"
-  const fetchUserCart = (userId) => {
-    return new Promise((resolve) => {
-      console.log(`Fetching cart for user: ${userId}`);
-      setTimeout(() => {
-        // Simulate data stored for a specific user
-        const mockDatabase = {
-          "1234556": [
-            {
-              id: 1,
-              courseCode: "COMP101",
-              name: "Intro to Programming",
-              term: "Fall 2025",
-              startEnd: "Sept 1 - Dec 15",
-              program: "Software Development",
-              description:
-                "Learn the basics of programming in C# and problem solving.",
-            },
-            {
-              id: 2,
-              courseCode: "WEB201",
-              name: "Web Development",
-              term: "Winter 2026",
-              startEnd: "Jan 5 - Mar 30",
-              program: "Software Development",
-              description:
-                "Covers HTML, CSS, JavaScript, and modern frameworks.",
-            },
-          ],
-        };
-
-        // Return the user's cart if found, otherwise an empty array
-        resolve(mockDatabase[userId] || []);
-      }, 1000);
-    });
-  };
-
+  const navigate = useNavigate();
+  const { currentUser } = useContext(UserContext);
   const [courses, setCourses] = useState([]);
-  const userId = "1234556"; // mock logged-in user ID
 
-  useEffect(() => {
-    // Fetch the cart when component mounts
-    fetchUserCart(userId).then((data) => setCourses(data));
-  }, [userId]);
+   useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    const storedData = JSON.parse(localStorage.getItem("registeredCourses")) || {};
+    const userCourseIds = storedData[currentUser.id] || [];
+
+    // Match IDs to full course objects
+    const userCourses = mockCourses.filter((c) =>
+      userCourseIds.includes(c.id)
+    );
+    setCourses(userCourses);
+  }, [currentUser, navigate]);
+
 
   const handleRemove = (courseId) => {
-    console.log(`Removed course with ID: ${courseId}`);
-    setCourses((prev) => prev.filter((course) => course.id !== courseId));
+    const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
+    const updated = (storedData[currentUser.id] || []).filter(
+      (id) => id !== courseId
+    );
+    storedData[currentUser.id] = updated;
+    localStorage.setItem("userCourses", JSON.stringify(storedData));
+
+    setCourses((prev) => prev.filter((c) => c.id !== courseId));
   };
 
   return (
     <main style={{ padding: "2rem" }}>
-      <CardComp title={`Your Cart`}>
+      <CardComp title={`Your Courses`}>
         {courses.length === 0 ? (
           <p>Loading your courses...</p>
         ) : (
@@ -71,6 +55,7 @@ const UserCourses = () => {
                 program={course.program}
                 description={course.description}
                 onRemove={() => handleRemove(course.id)}
+                isSignedIn={!!currentUser} //convert null/undefined to false valid user object into true.
               />
             ))}
           </>

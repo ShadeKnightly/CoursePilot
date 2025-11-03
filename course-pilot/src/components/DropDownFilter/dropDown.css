@@ -1,5 +1,5 @@
 
-select {
+.FilterSelect {
   padding: 0.5rem;
   border-radius: 6px;
   border: 1px solid var(--color-accent);

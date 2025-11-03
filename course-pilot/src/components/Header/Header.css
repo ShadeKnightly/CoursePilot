@@ -39,7 +39,7 @@
   align-items: center;
 }
 
-.signup-link {
+.header-button {
   color: white;
   background-color: var(--color-accent);
   text-decoration: none;
@@ -47,8 +47,22 @@
   border-radius: 6px;
   font-weight: 500;
   transition: background-color 0.2s ease;
+  margin-right: 0.6rem;
 }
 
-.signup-link:hover {
+.header-button:hover {
   background-color: var(--color-orange);
+}
+
+.signin-link {
+  color: white;
+  background-color: var(--color-orange);
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+.signin-link:hover {
+  background-color: var(--color-orange-hover);
 }
