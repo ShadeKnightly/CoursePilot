@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../../context/UserContext";
 import CardComp from "../../../components/card/cardComponent";
 import ClassItem from "../../../components/ClassItem/classItem";
 import SearchBox from "../../../components/Search/search";

@@ -8,13 +8,16 @@ function Header() {
   const navigate = useNavigate();
   const {currentUser, setCurrentUser} = useContext(UserContext);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("currentUser");
-    setCurrentUser(null);
-    setTimeout(() => {
-      navigate("/viewPrograms");
-    }, 0);
-  };
+
+const handleSignOut = () => {
+  localStorage.removeItem("currentUser");
+  localStorage.removeItem("messages"); // temp inbox clear for testing, so mock data restores after logout - delete when working with real database
+  setCurrentUser(null);
+  setTimeout(() => {
+    navigate("/viewPrograms");
+  }, 0);
+};
+
 
   const handleViewCourses = () => {
     navigate("/viewCourses");

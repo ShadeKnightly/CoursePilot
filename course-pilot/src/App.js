@@ -19,6 +19,7 @@ import Contact from "./pages/Student/contactPage/contactPage.jsx";
 import "./styles/Variables.css";
 import ViewPrograms from "./pages/Common/viewPrograms/viewPrograms.jsx";
 import ViewCourses from "./pages/Common/viewCourses/viewCourses.jsx";
+import MessageInbox from "./pages/Admin/MessageInbox/messageInbox.jsx";
 
 
 function App() {
@@ -49,6 +50,8 @@ function App() {
                 <Route path="viewCourses" element={<ViewCourses />} />
                 <Route path="/courses" element={<UserCourses />} />
                 <Route path="/contact" element={<Contact />} />
+
+                <Route path="/messageInbox" element={<MessageInbox />} />
 
                 {/* <Route path="/manage" element={<Manage />} />
             */}
