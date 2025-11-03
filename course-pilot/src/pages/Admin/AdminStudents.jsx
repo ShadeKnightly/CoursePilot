@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import CardComp from '../../components/card/cardComponent';
 import ClassItem from '../../components/ClassItem/classItem';
-import FilterStudents from './FilterStudents';
 import './AdminStudents.css';
 
 // Fixed data to clearly represent student records

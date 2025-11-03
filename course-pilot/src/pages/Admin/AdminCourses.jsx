@@ -1,174 +1,143 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import ClassItem from "../../components/ClassItem/classItem";
 import CardComp from "../../components/card/cardComponent.jsx";
-import Search from "../../components/Search/search.jsx";
-import DeleteConfirmation from "./DeleteConfirmation.jsx"; 
-import EditCoursePanel from "./EditCoursePanel.jsx"; 
-import CreateCoursePanel from "./CreateCoursePanel.jsx"; 
+import SearchBox from "../../components/Search/search.jsx";
+import DeleteConfirmation from "./DeleteConfirmation.jsx";
+import EditCoursePanel from "./EditCoursePanel.jsx";
+import CreateCoursePanel from "./CreateCoursePanel.jsx";
+import { mockCourses } from "../../data";
 
-const initialCourseData = [
-    {   
-        courseCode: 'COMP101', 
-        name: 'Intro to Programming', 
-        term: 'Fall 2025', 
-        startEnd: 'Sept 1 - Dec 15', 
-        program: 'Software Development', 
-        description: '...' 
-    },
-    { 
-        courseCode: 'WEB201', 
-        name: 'Web Development', 
-        term: 'Winter 2026', 
-        startEnd: 'Jan 5 - Mar 30', 
-        program: 'Software Development', 
-        description: '...' 
-    },
-    { 
-        courseCode: 'DBS301', 
-        name: 'Database Systems', 
-        term: 'Fall 2025', 
-        startEnd: 'Sept 1 - Dec 15', 
-        program: 'Software Development', 
-        description: '...', 
-    },
-];
+const AdminCourses = () => {
+  const [courses, setCourses] = useState([]);
+  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [searchField, setSearchField] = useState("");
+  const [courseToDelete, setCourseToDelete] = useState(null);
+  const [activePanel, setActivePanel] = useState(null);
 
-const AdminCourses = () => { 
-
-    //  Course Data is managed by state
-    const [courses, setCourses] = useState(initialCourseData); 
-    
-    // The rest of the list now uses the state variable
-    const coursesToDisplay = courses;
-
-    const [courseToDelete, setCourseToDelete] = useState(null);
-    const [activePanel, setActivePanel] = useState(null); 
-
-
-    // handlers for edit/delete
-    
-    const handleCancelPanel = () => {
-        setActivePanel(null);
+  // Simulate fetching courses (like ViewCourses)
+  useEffect(() => {
+    const fetchCourses = () => {
+      return new Promise((resolve) => {
+        console.log("Fetching all available courses for admin...");
+        setTimeout(() => resolve(mockCourses), 1000);
+      });
     };
 
-    const handleEditCourse = (courseCode) => {
-        const course = courses.find(c => c.courseCode === courseCode);
-        if (course) {
-            setActivePanel({ type: 'edit', data: course });
-        }
-    };
-    
-    // saving edited course
-    const handleSaveEditedCourse = (updatedCourseData) => {
-        setCourses(prevCourses => 
-            prevCourses.map(course => 
-                course.courseCode === updatedCourseData.courseCode 
-                    ? updatedCourseData // Replace the old course with the updated data
-                    : course
-            )
-        );
-        handleCancelPanel(); 
-    };
-    
-    // saving new course
-    const handleSaveNewCourse = (newCourseData) => {
-        // here we can make an api call
-        
-        // simulate an api response
-        setCourses(prevCourses => [...prevCourses, newCourseData]);
-        
-        console.log(`[ACTION] Saved new course: ${newCourseData.courseCode}`);
-        handleCancelPanel(); 
-    };
-    
-    const handleCreateCourse = () => {
-        setActivePanel({ type: 'create', data: null });
-    };
+    fetchCourses().then((data) => {
+      setCourses(data);
+      setFilteredCourses(data);
+    });
+  }, []);
 
+  // Unified search filtering
+  useEffect(() => {
+    if (!courses.length) return;
 
-    // handler for delete
-    
-    const handleDeleteCourse = (courseCode) => {
-        setCourseToDelete(courseCode);
-    };
-
-    const handleCancelDelete = () => {
-        setCourseToDelete(null);
-    };
-
-    // confirm deletion
-    const handleConfirmDelete = () => {
-        if (courseToDelete) {
-            // here we can make another api call
-
-            // simulates api response
-            setCourses(prevCourses => 
-                prevCourses.filter(course => course.courseCode !== courseToDelete)
-            );
-            
-            console.log(`[ACTION] Confirmed deletion of: ${courseToDelete}`);
-            setCourseToDelete(null);
-        }
-    }; 
-
-    // renders-
-    const twoSearchBar = () => (
-        <div className="card-header-search-bar"> 
-            <Search placeholder={'Search course name'}/>
-            <Search placeholder={'Search course code'}/>
-        </div>
+    const searchValue = searchField.toLowerCase();
+    const filtered = courses.filter((course) =>
+      Object.values(course).join(" ").toLowerCase().includes(searchValue)
     );
 
-    const createButton = (
-        <button className="create-btn" onClick={handleCreateCourse}>
-            Create New Course
-        </button>
+    setFilteredCourses(filtered);
+  }, [courses, searchField]);
+
+  // --- Handlers ---
+  const onSearchChange = (event) => setSearchField(event.target.value);
+
+  const handleEditCourse = (courseCode) => {
+    const course = courses.find((c) => c.courseCode === courseCode);
+    if (course) setActivePanel({ type: "edit", data: course });
+  };
+
+  const handleSaveEditedCourse = (updatedCourseData) => {
+    setCourses((prev) =>
+      prev.map((c) =>
+        c.courseCode === updatedCourseData.courseCode ? updatedCourseData : c
+      )
     );
+    setActivePanel(null);
+  };
 
-    return ( 
-        <div className="admin-course-list-container">
-            <CardComp 
-                title='Courses' 
-                headerComponent={twoSearchBar()}
-                actionButton={createButton} 
-            > 
-                {/* Renders the list from the 'courses' state */}
-                {coursesToDisplay.map((course) => (
-                    <ClassItem 
-                        key={course.courseCode} 
-                        {...course}
-                        onEdit={() => handleEditCourse(course.courseCode)}
-                        onRemove={() => handleDeleteCourse(course.courseCode)} 
-                        isSignedIn={true}
-                        isAdmin={true}
-                    />
-                ))}
-            </CardComp>
-            
-            {/* Conditional Panels */}
-            {activePanel && activePanel.type === 'edit' && (
-                <EditCoursePanel
-                    courseData={activePanel.data}
-                    onSave={handleSaveEditedCourse}
-                    onCancel={handleCancelPanel}
-                />
-            )}
+  const handleSaveNewCourse = (newCourseData) => {
+    const newId =
+      courses.length > 0 ? Math.max(...courses.map((c) => c.id)) + 1 : 1;
+    setCourses((prev) => [...prev, { id: newId, ...newCourseData }]);
+    setActivePanel(null);
+  };
 
-            {activePanel && activePanel.type === 'create' && (
-                <CreateCoursePanel
-                    onSave={handleSaveNewCourse}
-                    onCancel={handleCancelPanel}
-                />
-            )}
-            
-            {/* Delete Modal */}
-            <DeleteConfirmation
-                courseCode={courseToDelete} 
-                onConfirm={handleConfirmDelete} // Uses the confirmed deletion logic
-                onCancel={handleCancelDelete}
+  const handleCreateCourse = () => setActivePanel({ type: "create" });
+  const handleCancelPanel = () => setActivePanel(null);
+
+  const handleDeleteCourse = (courseCode) => setCourseToDelete(courseCode);
+  const handleCancelDelete = () => setCourseToDelete(null);
+  const handleConfirmDelete = () => {
+    if (courseToDelete) {
+      setCourses((prev) =>
+        prev.filter((course) => course.courseCode !== courseToDelete)
+      );
+      setCourseToDelete(null);
+    }
+  };
+
+  // --- Render ---
+  return (
+    <main style={{ padding: "2rem" }}>
+      <CardComp
+        title="Manage Courses"
+        headerComponent={
+          <SearchBox placeholder="Search courses..." onChangeHandler={onSearchChange} />
+        }
+        actionButton={
+          <button className="create-btn" onClick={handleCreateCourse}>
+            + Create New Course
+          </button>
+        }
+      >
+        {courses.length === 0 ? (
+          <p>Loading courses...</p>
+        ) : filteredCourses.length > 0 ? (
+          filteredCourses.map((course) => (
+            <ClassItem
+              key={course.id}
+              courseCode={course.courseCode}
+              name={course.name}
+              term={course.term}
+              startEnd={course.startEnd}
+              program={course.program}
+              description={course.description}
+              onEdit={() => handleEditCourse(course.courseCode)}
+              onRemove={() => handleDeleteCourse(course.courseCode)}
+              isAdmin={true}
             />
-        </div>
-    );
-} 
+          ))
+        ) : (
+          <p>No courses match your search.</p>
+        )}
+      </CardComp>
+
+      {/* Panels */}
+      {activePanel?.type === "edit" && (
+        <EditCoursePanel
+          courseData={activePanel.data}
+          onSave={handleSaveEditedCourse}
+          onCancel={handleCancelPanel}
+        />
+      )}
+
+      {activePanel?.type === "create" && (
+        <CreateCoursePanel
+          onSave={handleSaveNewCourse}
+          onCancel={handleCancelPanel}
+        />
+      )}
+
+      <DeleteConfirmation
+        courseCode={courseToDelete}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
+    </main>
+  );
+};
 
 export default AdminCourses;

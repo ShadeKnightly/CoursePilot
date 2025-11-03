@@ -21,6 +21,7 @@ import ViewPrograms from "./pages/Common/viewPrograms/viewPrograms.jsx";
 import ViewCourses from "./pages/Common/viewCourses/viewCourses.jsx";
 import AdminCourses from "./pages/Admin/AdminCourses.jsx";
 import AdminMessages from "./pages/Admin/AdminMessages.jsx";
+import AdminStudents from "./pages/Admin/AdminStudents.jsx";
 
 
 
@@ -55,6 +56,7 @@ function App() {
 
                 <Route path="/adminCourses" element={<AdminCourses />} />
                 <Route path="/adminMessages" element={<AdminMessages />} />
+                <Route path="/studentManage"  element={<AdminStudents></AdminStudents>} />
 
 
                 {/* <Route path="/manage" element={<Manage />} />
