@@ -160,3 +160,17 @@ export const users = [
 //     password: "",
 //     role: ""
 //   });
+
+
+export const mockMessages = [
+  { id: 1, name: "Alice Johnson", subject: "Project Update", body: "Hi Admin, the project report is ready for review.", date: "2025-11-01" },
+  { id: 2, name: "Bob Smith", subject: "Question About Course", body: "Can you clarify the assignment due date?", date: "2025-11-02" },
+  { id: 3, name: "Carla Ruiz", subject: "Schedule Change", body: "I need to change my tutorial session.", date: "2025-11-02" },
+  { id: 4, name: "Daniel Kim", subject: "Request for Material", body: "Could you provide additional reading material?", date: "2025-11-03" },
+  { id: 5, name: "Emma Lee", subject: "Feedback", body: "The lecture notes were very helpful, thank you!", date: "2025-11-03" },
+  { id: 6, name: "Fiona Patel", subject: "Exam Clarification", body: "I am unsure about question 4 on the exam.", date: "2025-11-04" },
+  { id: 7, name: "George Brown", subject: "Meeting Request", body: "Can we schedule a meeting to discuss my progress?", date: "2025-11-04" },
+  { id: 8, name: "Hannah White", subject: "Course Registration", body: "I would like to register for the advanced module.", date: "2025-11-05" },
+  { id: 9, name: "Ian Torres", subject: "Project Feedback", body: "The peer review comments were very useful.", date: "2025-11-05" },
+  { id: 10, name: "Julia Nguyen", subject: "Late Submission", body: "I need to submit my assignment late due to illness.", date: "2025-11-06" }
+];
