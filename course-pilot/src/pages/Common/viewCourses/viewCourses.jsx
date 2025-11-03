@@ -7,7 +7,7 @@ import "../../Student/courseSearch/courseSearch.css";
 import { mockCourses } from "../../../data";
 
 
-const viewCourses = () => {
+const ViewCourses = () => {
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchField, setSearchField] = useState("");
@@ -85,4 +85,4 @@ const viewCourses = () => {
   );
 };
 
-export default viewCourses;
+export default ViewCourses;
