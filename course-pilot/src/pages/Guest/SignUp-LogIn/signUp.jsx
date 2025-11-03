@@ -17,7 +17,6 @@ const SignUp = () => {
     program: "",
     username: "",
     password: "",
-    role: ""
   });
 
   const handleChange = (e) => {

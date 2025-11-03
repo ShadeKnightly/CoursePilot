@@ -8,6 +8,7 @@ import { mockCourses } from "../../data";
 const CourseCart = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
+  const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
 
   useEffect(() => {
@@ -22,6 +23,7 @@ const CourseCart = () => {
       userCourseIds.includes(c.id)
     );
     setCourses(userCourses);
+    setLoading(false);
   }, [currentUser, navigate]);
 
 
@@ -90,8 +92,9 @@ const CourseCart = () => {
         >
           ← Back to Course Registration
         </button>
-        {courses.length === 0 ? (
-          <p>Loading your courses...</p>
+        {loading ? ( <p> Loading your courses...</p> ) : 
+        courses.length === 0 ? (
+          <p>No courses in cart.</p>
         ) : (
           <>
             {courses.map((course) => (

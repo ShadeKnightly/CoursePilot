@@ -23,6 +23,7 @@ import AdminCourses from "./pages/Admin/AdminCourses.jsx";
 import AdminMessages from "./pages/Admin/AdminMessages.jsx";
 import AdminStudents from "./pages/Admin/AdminStudents.jsx";
 
+import MessageInbox from "./pages/Admin/MessageInbox/messageInbox.jsx";
 
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
                 <Route path="/adminMessages" element={<AdminMessages />} />
                 <Route path="/studentManage"  element={<AdminStudents></AdminStudents>} />
 
+                <Route path="/messageInbox" element={<MessageInbox />} />
 
                 {/* <Route path="/manage" element={<Manage />} />
             */}

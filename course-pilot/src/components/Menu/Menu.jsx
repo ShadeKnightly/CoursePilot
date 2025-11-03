@@ -19,6 +19,9 @@ function Menu() {
             <li><Link to="/adminCourses">Manage Courses</Link></li>
             <li><Link to="/studentManage">Manage Students</Link></li>
             <li><Link to="/adminMessages">View Messages</Link></li>
+            <li><Link to="/courses">Manage Courses</Link></li>
+            <li><Link to="/students">Manage Students</Link></li>
+            <li><Link to="/messageInbox">View Messages</Link></li>
           </>
         ) : (
           <>

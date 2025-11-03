@@ -9,6 +9,7 @@ const UserCourses = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
   const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
    useEffect(() => {
     if (!currentUser) {
@@ -24,6 +25,7 @@ const UserCourses = () => {
       userCourseIds.includes(c.id)
     );
     setCourses(userCourses);
+    setLoading(false);
   }, [currentUser, navigate]);
 
 
@@ -41,8 +43,9 @@ const UserCourses = () => {
   return (
     <main style={{ padding: "2rem" }}>
       <CardComp title={`Your Courses`}>
-        {courses.length === 0 ? (
-          <p>Loading your courses...</p>
+        {loading ? ( <p> Loading your courses...</p> ) : 
+        courses.length === 0 ? (
+          <p>No courses in cart.</p>
         ) : (
           <>
             {courses.map((course) => (
