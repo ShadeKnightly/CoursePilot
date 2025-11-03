@@ -28,48 +28,47 @@ const LogIn = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Check if all fields are filled
-    if (!formData.email || !formData.password) {
-      setStatus("Please fill all fields.");
-      return;
-    }
+  // Check if all fields are filled
+  if (!formData.email || !formData.password) {
+    setStatus("Please fill all fields.");
+    return;
+  }
 
-    setStatus("Signing In...");
+  setStatus("Signing In...");
 
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  // Simulate delay
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Retrieve all users
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  // Retrieve all users
+  const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  const allUsers = [...mockUsers, ...(storedUsers || [])];
 
-    const allUsers = [...mockUsers, ...storedUsers];
+  // Find user that matches email/username + password
+  const matchedUser = allUsers.find(
+    (u) =>
+      (u.email === formData.email || u.username === formData.email) &&
+      u.password === formData.password
+  );
 
-    // Find user that matches email/username + password
-    const matchedUser = allUsers.find(
-      (u) =>
-        (u.email === formData.email || u.username === formData.email) &&
-        u.password === formData.password
-    );
+  if (!matchedUser) {
+    setStatus("Invalid email/username or password.");
+    return;
+  }
 
-    if (!matchedUser) {
-      setStatus("Invalid email/username or password.");
-      return;
-    }
+  // Save logged-in user to current session
+  localStorage.setItem("currentUser", JSON.stringify(matchedUser));
+  setCurrentUser(matchedUser);
 
-    // Save logged-in user to current session
-    localStorage.setItem("currentUser", JSON.stringify(matchedUser));
-    setCurrentUser(matchedUser); // triggers rerender globally
+  setStatus(`Welcome back, ${matchedUser.username || matchedUser.email}!`);
 
+  // Redirect after success
+  setTimeout(() => {
+    navigate("/dashboard");
+  }, 1000);
+};
 
-    setStatus(`Welcome back, ${matchedUser.username || matchedUser.email}!`);
-    
-
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
-  };
 
   return (
     <main className="signup-page">
