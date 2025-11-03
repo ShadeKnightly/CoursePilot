@@ -18,24 +18,59 @@ border: 1px solid #05A4FC;
 }
 
 
-
 .card-header {
-  position: sticky;
+  position: relative;
   top: 0;
   background-color: var(--color-accent);
   color: var(--color-primary);
-  padding: 10px 20px;
+  padding: 30px 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between; 
   z-index: 10; 
 }
 
 .card-title {
   font-weight: 500;
   font-size: 1.3rem;
-  text-align: center;
-  flex-grow: 1; 
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center; 
+  z-index: 11;
+}
+
+/* new card header search bar class for search bar styling on admin since they appeared on the far right corner */
+.card-header-search-bar {
+  max-width: 400px; 
+  flex-grow: 0; 
+  flex-shrink: 0;
+  display: flex;
+  gap: 10px; 
+  justify-content: flex-start; 
+  padding-right: 20px; 
+}
+
+.card-header-action {
+  flex-shrink: 0; 
+  margin-left: auto; 
+  padding-right: 10px; 
+  z-index: 12;
+}
+
+.create-btn {
+  background-color: #6C4CDA;
+  color: white;
+  border: none;
+  padding: 25px 25px; 
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.create-btn:hover {
+  background-color: #775ad3;
 }
 
 .card-icons {
@@ -80,4 +115,5 @@ border: 1px solid #05A4FC;
 .card-body::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
+
 
