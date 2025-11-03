@@ -1,121 +1,169 @@
-import React, { useEffect, useState } from "react";
-import Menu from "../../components/Menu/Menu";
-import "../../styles/AdminStudents.css";
+import React, {useState} from "react";
+import ClassItem from "../../components/ClassItem/classItem";
+import CardComp from "../../components/card/cardComponent.jsx";
+import Search from "../../components/Search/search.jsx";
 
-const AdminStudents = () => {
-  const [courses, setCourses] = useState([]);
-  const [expanded, setExpanded] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
-  // Simulated API call
-  useEffect(() => {
-    setTimeout(() => {
-      setCourses([
-        {
-          id: 1,
-          name: "Discrete Mathematics",
-          students: [
-            { id: 1, name: "Alice Johnson", email: "alice@school.com" },
-            { id: 2, name: "Bob Smith", email: "bob@school.com" },
-            { id: 3, name: "Charlie Brown", email: "charlie@school.com" },
-          ],
+import DeleteConfirmation from "./DeleteConfirmation.jsx"; 
+import EditCourse from "./EditCourse.jsx"; 
+import CreateCourse from "./CreateCourse.jsx"; 
+
+const AdminCourses = () => { 
+
+    // define courses data array to display courses
+    const coursesToDisplay = [
+        
+        { 
+           courseCode: 'COMP101', 
+           name: 'Intro to Programming', 
+           term: 'Fall 2025', 
+           startEnd: 'Sept 1 - Dec 15', 
+          program: 'Software Development', 
+          description: '...' },
+        { 
+            courseCode: 'WEB201', 
+            name: 'Web Development', 
+            term: 'Winter 2026', 
+            startEnd: 'Jan 5 - Mar 30', 
+            program: 'Software Development', 
+            description: '...' 
         },
-        {
-          id: 2,
-          name: "Web Development",
-          students: [
-            { id: 4, name: "Daniel Kim", email: "daniel@school.com" },
-            { id: 5, name: "Emma Wilson", email: "emma@school.com" },
-          ],
+        { 
+            courseCode: 'DBS301', 
+            name: 'Database Systems', 
+            term: 'Fall 2025', 
+            startEnd: 'Sept 1 - Dec 15', 
+            program: 'Software Development', 
+            description: '...', 
         },
-        {
-          id: 3,
-          name: "Programming Fundamentals",
-          students: [
-            { id: 6, name: "George Lopez", email: "george@school.com" },
-            { id: 7, name: "Hannah Davis", email: "hannah@school.com" },
-          ],
-        },
-      ]);
-    }, 1000);
-  }, []);
+        
+    ];
 
-  // Filter courses and students by search term
-  const filteredCourses = courses
-    .filter((course) =>
-      course.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .map((course) => ({
-      ...course,
-      students: course.students.filter((s) =>
-        s.name.toLowerCase().includes(searchTerm.toLowerCase())
-      ),
-    }));
+    const [courseToDelete, setCourseToDelete] = useState(null);
+    
+    // 🎯 NEW STATE: Tracks which panel is currently open
+    // Value is { type: 'edit' | 'create', data: courseObject | null } or null
+    const [activePanel, setActivePanel] = useState(null); 
 
-  const toggleExpand = (id) => {
-    setExpanded(expanded === id ? null : id);
-  };
 
-  return (
-    <div className="admin-layout">
-      <Menu admin={true} />
+    // --- HANDLERS FOR EDIT/CREATE FORMS ---
+    
+    // Universal handler to close any active panel
+    const handleCancelPanel = () => {
+        setActivePanel(null);
+    };
 
-      <div className="admin-container">
-        <div className="admin-header">
-          <h1>Students</h1>
-          <input
-            type="text"
-            placeholder="Search by course or student name..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="admin-search"
-          />
+    // Handler for the "Edit" click (opens the Edit panel)
+    const handleEditCourse = (courseCode) => {
+        // Find the full course data to pre-populate the edit form
+        const course = coursesToDisplay.find(c => c.courseCode === courseCode);
+        
+        if (course) {
+            // Set active panel to 'edit' with the specific course data
+            setActivePanel({ type: 'edit', data: course });
+        }
+    };
+    
+    // Handler for saving an edited course
+    const handleSaveEditedCourse = (updatedCourseData) => {
+        console.log(`[ACTION] Confirmed saving changes to: ${updatedCourseData.courseCode}`);
+        // TODO: Implement actual course update logic here
+        handleCancelPanel(); // Close the panel
+    };
+    
+    // Handler for saving a new course
+    const handleSaveNewCourse = (newCourseData) => {
+        console.log(`[ACTION] Confirmed saving new course: ${newCourseData.courseCode}`);
+        // TODO: Implement actual course creation logic here
+        handleCancelPanel(); // Close the panel
+    };
+    
+    // Handler for the "Create New Course" button (opens the Create panel)
+    const handleCreateCourse = () => {
+        // Set active panel to 'create'
+        setActivePanel({ type: 'create', data: null });
+    };
+
+
+    // --- HANDLERS FOR DELETE MODAL (Unchanged) ---
+    
+    // sets course to delete
+    const handleDeleteCourse = (courseCode) => {
+        setCourseToDelete(courseCode);
+    };
+
+    // closes without taking action
+    const handleCancelDelete = () => {
+        setCourseToDelete(null);
+    };
+
+    // executes the final delete action
+    const handleConfirmDelete = () => {
+        if (courseToDelete) {
+            console.log(`[ACTION] Confirmed deletion of: ${courseToDelete}`);
+            // TODO: Implement actual course deletion logic 
+
+            setCourseToDelete(null);
+        }
+    }; 
+
+    // function to display the two search bars inside cardComp container
+    const twoSearchBar = () => (
+        <div className="card-header-search-bar"> 
+            <Search placeholder={'Search course name'}/>
+            <Search placeholder={'Search course code'}/>
         </div>
+    );
 
-        <div className="courses-list">
-          {filteredCourses.map((course) => (
-            <div key={course.id} className="course-card">
-              <div
-                className="course-header"
-                onClick={() => toggleExpand(course.id)}
-              >
-                <h2>{course.name}</h2>
-                <span>{course.students.length} students</span>
-                <button className="toggle-btn">
-                  {expanded === course.id ? "−" : "+"}
-                </button>
-              </div>
+    const createButton = (
+        <button className="create-btn" onClick={handleCreateCourse}> {/* 🎯 Uses new handler */}
+            Create New Course
+        </button>
+    );
 
-              <div
-                className={`students-collapse ${
-                  expanded === course.id ? "open" : ""
-                }`}
-              >
-                <div className="students-table">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {course.students.map((student) => (
-                        <tr key={student.id}>
-                          <td>{student.name}</td>
-                          <td>{student.email}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          ))}
+    return ( 
+        <div className="admin-course-list-container">
+            <CardComp 
+                title='Courses' 
+                headerComponent={twoSearchBar()}
+                actionButton={createButton} 
+            > 
+                {coursesToDisplay.map((course) => (
+                    <ClassItem 
+                    key={course.courseCode} 
+                    {...course}
+                    onEdit={() => handleEditCourse(course.courseCode)}
+                    onRemove={() => handleDeleteCourse(course.courseCode)} 
+                    isSignedIn={true}
+                    isAdmin={true} 
+                />
+                ))}
+            </CardComp>
+            
+            {/* CONDITIONAL RENDERING FOR EDIT PANEL */}
+            {activePanel && activePanel.type === 'edit' && (
+                <EditCourse
+                    courseData={activePanel.data}
+                    onSave={handleSaveEditedCourse}
+                    onCancel={handleCancelPanel}
+                />
+            )}
+
+            {activePanel && activePanel.type === 'create' && (
+                <CreateCourse
+                    onSave={handleSaveNewCourse}
+                    onCancel={handleCancelPanel}
+                />
+            )}
+            
+            {/* Render the Confirmation Modal at the end */}
+            <DeleteConfirmation
+                courseCode={courseToDelete} 
+                onConfirm={handleConfirmDelete}
+                onCancel={handleCancelDelete}
+            />
         </div>
-      </div>
-    </div>
-  );
-};
+    );
+} 
 
-export default AdminStudents;
+export default AdminCourses;
