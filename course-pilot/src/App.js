@@ -19,6 +19,9 @@ import Contact from "./pages/Student/contactPage/contactPage.jsx";
 import "./styles/Variables.css";
 import ViewPrograms from "./pages/Common/viewPrograms/viewPrograms.jsx";
 import ViewCourses from "./pages/Common/viewCourses/viewCourses.jsx";
+import AdminCourses from "./pages/Admin/AdminCourses.jsx";
+import AdminMessages from "./pages/Admin/AdminMessages.jsx";
+
 
 
 function App() {
@@ -49,6 +52,10 @@ function App() {
                 <Route path="viewCourses" element={<ViewCourses />} />
                 <Route path="/courses" element={<UserCourses />} />
                 <Route path="/contact" element={<Contact />} />
+
+                <Route path="/adminCourses" element={<AdminCourses />} />
+                <Route path="/adminMessages" element={<AdminMessages />} />
+
 
                 {/* <Route path="/manage" element={<Manage />} />
             */}

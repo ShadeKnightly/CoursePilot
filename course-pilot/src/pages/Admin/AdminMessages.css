@@ -1,0 +1,106 @@
+.content-area {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+
+.message-inbox-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
+}
+
+.message-inbox-header h2 {
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+.filter-options label {
+    margin-right: 5px;
+    color: #fff;
+}
+
+.filter-options select {
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+.message-container {
+    height: 100%;
+}
+
+.message-list-pane {
+    flex: 1;
+}
+
+.message-scroll-area {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.message-item {
+    display: block; 
+    padding: 8px 15px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+    background-color: transparent; 
+}
+
+.message-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.message-sender {
+    font-weight: bold;
+    color: #fff;
+    margin: 0 0 2px 0;
+    padding-left: 15px;
+}
+
+.message-subject {
+    font-size: 0.9em;
+    color: #ccc;
+    margin: 0 0 2px 0;
+    padding-left: 15px;
+}
+
+.message-date {
+    font-size: 0.8em;
+    color: #999;
+    margin: 0;
+    padding-left: 15px;
+}
+
+
+.color-indicator {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+
+}
+
+.message-item.unread .color-indicator {
+    background-color: #ffc107;
+}
+
+.message-item.read .color-indicator {
+    background-color: transparent;
+}
+
+.message-item .col-subject,
+.message-item .col-date {
+    display: none;
+}

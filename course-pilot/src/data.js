@@ -1,5 +1,4 @@
-// src/data/data.js
-
+// Courses
 export const mockCourses = [
   {
     id: 1,
@@ -123,6 +122,7 @@ export const mockCourses = [
   },
 ];
 
+// Users
 export const users = [
   {
     id: 1,
@@ -149,14 +149,52 @@ export const users = [
     role: "student",
   },
 ];
-//     firstName: "",
-//     lastName: "",
-//     email: "",
-//     phone: "",
-//     birthday: "",
-//     department: "Software Development",
-//     program: "",
-//     username: "",
-//     password: "",
-//     role: ""
-//   });
+
+// Admin Messages
+export const mockMessages = [
+  {
+    id: 1,
+    sender: `${users[1].firstName} ${users[1].lastName}`,
+    email: users[1].email,
+    subject: "Question about COMP101",
+    message: `Hi, I wanted to ask if there are any prerequisites for ${mockCourses[0].name}?`,
+    date: "2025-11-01",
+    read: false,
+  },
+  {
+    id: 2,
+    sender: "Alice Johnson",
+    email: "alice@example.com",
+    subject: "Registration Issue",
+    message: `I tried registering for ${mockCourses[1].name}, but it says full. Can you help?`,
+    date: "2025-11-02",
+    read: true,
+  },
+  {
+    id: 3,
+    sender: "John Doe",
+    email: "john@example.com",
+    subject: "Feedback on Database Systems",
+    message: `The ${mockCourses[2].name} course is really helpful! Thank you for the materials.`,
+    date: "2025-11-02",
+    read: false,
+  },
+  {
+    id: 4,
+    sender: "Emily Parker",
+    email: "emily@example.com",
+    subject: "Course Content Inquiry",
+    message: `Can you provide more details on what we will cover in ${mockCourses[5].name}?`,
+    date: "2025-11-03",
+    read: false,
+  },
+  {
+    id: 5,
+    sender: `${users[1].firstName} ${users[1].lastName}`,
+    email: users[1].email,
+    subject: "UI/UX Design Help",
+    message: `I am struggling with the project for ${mockCourses[7].name}. Can I schedule a meeting with the instructor?`,
+    date: "2025-11-04",
+    read: true,
+  },
+];
