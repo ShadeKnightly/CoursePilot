@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CoursePanel from "./CoursePanel.css";
+import  "./CoursePanel.css";
 
 // Import your styling file here (e.g., './CoursePanel.css')
 

@@ -1,0 +1,87 @@
+/* --- Two-Column Layout --- */
+.admin-students-layout {
+    display: flex;
+    gap: 20px; /* Space between the main content and the filter panel */
+    padding: 20px; /* Outer padding */
+}
+
+.main-content-column {
+    flex-grow: 1; /* Takes up most of the space */
+    min-width: 70%; /* Ensures the content card has sufficient width */
+}
+
+.sidebar-column {
+    width: 300px; /* Fixed width for the filter panel */
+    flex-shrink: 0;
+}
+
+
+/* --- Filter Panel Styling --- */
+.filter-panel {
+    background-color: #24243b; /* Dark background matching the cards/header */
+    color: white;
+    padding: 20px;
+    border-radius: 5px;
+    height: fit-content; /* Ensure it only takes up necessary height */
+}
+
+.filter-title {
+    color: #4b89ff; /* Bright blue color for the title */
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.filter-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.filter-input, .filter-select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #4b89ff; /* Blue border */
+    background-color: #1a1a2e; /* Darker input background */
+    color: white;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+/* --- Apply Button --- */
+.apply-btn {
+    background-color: #ff6600; /* Orange color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.apply-btn:hover {
+    background-color: #e65c00; 
+}
+
+/* --- Add New Student Button (styled to be at the bottom) --- */
+.add-student-btn {
+    /* Assuming you want it at the bottom, matching the screenshot's lower positioning */
+    background-color: #4b89ff; /* Blue color */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 30px; /* Space it out from the apply button */
+    text-transform: uppercase;
+}
+
+.add-student-btn:hover {
+    background-color: #3a75e0;
+}
+

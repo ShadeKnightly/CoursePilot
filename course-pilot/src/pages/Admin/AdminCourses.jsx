@@ -7,14 +7,35 @@ import EditCoursePanel from "./EditCoursePanel.jsx";
 import CreateCoursePanel from "./CreateCoursePanel.jsx"; 
 
 const initialCourseData = [
-    { courseCode: 'COMP101', name: 'Intro to Programming', term: 'Fall 2025', startEnd: 'Sept 1 - Dec 15', program: 'Software Development', description: '...' },
-    { courseCode: 'WEB201', name: 'Web Development', term: 'Winter 2026', startEnd: 'Jan 5 - Mar 30', program: 'Software Development', description: '...' },
-    { courseCode: 'DBS301', name: 'Database Systems', term: 'Fall 2025', startEnd: 'Sept 1 - Dec 15', program: 'Software Development', description: '...', },
+    {   
+        courseCode: 'COMP101', 
+        name: 'Intro to Programming', 
+        term: 'Fall 2025', 
+        startEnd: 'Sept 1 - Dec 15', 
+        program: 'Software Development', 
+        description: '...' 
+    },
+    { 
+        courseCode: 'WEB201', 
+        name: 'Web Development', 
+        term: 'Winter 2026', 
+        startEnd: 'Jan 5 - Mar 30', 
+        program: 'Software Development', 
+        description: '...' 
+    },
+    { 
+        courseCode: 'DBS301', 
+        name: 'Database Systems', 
+        term: 'Fall 2025', 
+        startEnd: 'Sept 1 - Dec 15', 
+        program: 'Software Development', 
+        description: '...', 
+    },
 ];
 
 const AdminCourses = () => { 
 
-    // 🎯 1. Course Data is now managed by state
+    //  Course Data is managed by state
     const [courses, setCourses] = useState(initialCourseData); 
     
     // The rest of the list now uses the state variable
@@ -24,7 +45,7 @@ const AdminCourses = () => {
     const [activePanel, setActivePanel] = useState(null); 
 
 
-    // --- HANDLERS FOR EDIT/CREATE FORMS ---
+    // handlers for edit/delete
     
     const handleCancelPanel = () => {
         setActivePanel(null);
@@ -37,7 +58,7 @@ const AdminCourses = () => {
         }
     };
     
-    // 🎯 Implementation for Saving an EDITED course
+    // saving edited course
     const handleSaveEditedCourse = (updatedCourseData) => {
         setCourses(prevCourses => 
             prevCourses.map(course => 
@@ -49,11 +70,11 @@ const AdminCourses = () => {
         handleCancelPanel(); 
     };
     
-    // 🎯 Implementation for Saving a NEW course
+    // saving new course
     const handleSaveNewCourse = (newCourseData) => {
-        // Here you would typically make an API call (axios.post('/api/courses', newCourseData)).
+        // here we can make an api call
         
-        // Simulating the API response/update by adding the new course to state
+        // simulate an api response
         setCourses(prevCourses => [...prevCourses, newCourseData]);
         
         console.log(`[ACTION] Saved new course: ${newCourseData.courseCode}`);
@@ -65,7 +86,7 @@ const AdminCourses = () => {
     };
 
 
-    // --- HANDLERS FOR DELETE MODAL ---
+    // handler for delete
     
     const handleDeleteCourse = (courseCode) => {
         setCourseToDelete(courseCode);
@@ -75,12 +96,12 @@ const AdminCourses = () => {
         setCourseToDelete(null);
     };
 
-    // 🎯 Implementation for CONFIRMING the deletion
+    // confirm deletion
     const handleConfirmDelete = () => {
         if (courseToDelete) {
-            // Here you would typically make an API call (axios.delete(`/api/courses/${courseToDelete}`)).
+            // here we can make another api call
 
-            // Simulating the API response/update by filtering the course out of state
+            // simulates api response
             setCourses(prevCourses => 
                 prevCourses.filter(course => course.courseCode !== courseToDelete)
             );
@@ -90,7 +111,7 @@ const AdminCourses = () => {
         }
     }; 
 
-    // --- RENDER FUNCTIONS (Unchanged) ---
+    // renders-
     const twoSearchBar = () => (
         <div className="card-header-search-bar"> 
             <Search placeholder={'Search course name'}/>
