@@ -66,3 +66,23 @@
 .remove-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
+
+.edit-btn {
+  background-color: #f7b233;
+  color: black;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: black;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}

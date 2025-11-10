@@ -20,8 +20,8 @@ import "./styles/Variables.css";
 import ViewPrograms from "./pages/Common/viewPrograms/viewPrograms.jsx";
 import ViewCourses from "./pages/Common/viewCourses/viewCourses.jsx";
 import MessageInbox from "./pages/Admin/MessageInbox/messageInbox.jsx";
-import AdminStudents from "./pages/Admin/AdminStudents.jsx";
-import AdminCourses from "./pages/Admin/AdminCourses.jsx";
+import AdminStudents from "./pages/Admin/Admin Students/AdminStudents.jsx";
+import AdminCourses from "./pages/Admin/Courses/AdminCourses.jsx";
 
 
 function App() {
@@ -55,7 +55,9 @@ function App() {
 
                 <Route path="/messageInbox" element={<MessageInbox />} />
                 <Route path="/students" element={<AdminStudents />} />
-                <Route path="/manageCourses" element={<AdminCourses />} />
+
+                {/* Admin courses wasnt showing because it was using a different path*/}
+                <Route path="/AdminCourses" element={<AdminCourses />} />
 
                 {/* <Route path="/manage" element={<Manage />} />
             */}

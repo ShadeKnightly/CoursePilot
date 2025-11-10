@@ -16,7 +16,8 @@ function Menu() {
         <li><Link to="/profile">View Profile</Link></li>
         {isAdmin ? (
           <>
-            <li><Link to="/manageCourses">Manage Courses</Link></li>
+            
+            <li><Link to="/AdminCourses">Manage Courses</Link></li>
             <li><Link to="/students">Manage Students</Link></li>
             <li><Link to="/messageInbox">View Messages</Link></li>
           </>
