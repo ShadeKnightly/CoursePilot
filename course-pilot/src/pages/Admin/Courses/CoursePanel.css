@@ -1,0 +1,234 @@
+/* --- 1. CORE PANEL POSITIONING AND APPEARANCE --- */
+
+.edit-course-panel {
+    /* CRITICAL: Position the panel over other content */
+    position: fixed; 
+    
+    /* Adjust these to position the panel correctly on the right */
+    top: 120px; /* Below the header/menu bars */
+    right: 30px; 
+    
+    /* Styling based on your design image */
+    width: 650px; 
+    max-width: 90vw;
+    max-height: 85vh;
+    padding: 30px;
+    
+    background-color: #001f3f; /* Dark primary background */
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+    z-index: 1000; /* Ensure it's above other elements */
+    overflow-y: auto; /* Allow scrolling if the form is too long */
+}
+
+.course-details-title {
+    color: #fff;
+    font-size: 1.8em;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+    border-bottom: 2px solid #007bff; /* Bright blue underline */
+    padding-bottom: 10px;
+}
+
+/* --- 2. INPUT FIELD STYLING --- */
+
+.form-group label {
+    display: block;
+    color: #b3cde0; /* Light label color */
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background-color: #002d5b; /* Slightly lighter dark input background */
+    border: 1px solid #00509e; 
+    border-radius: 5px;
+    color: #fff;
+    font-size: 1em;
+    box-sizing: border-box; /* Important for width calculation */
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* --- 3. CSS GRID LAYOUT --- */
+
+.course-form-grid {
+    display: grid;
+    /* Define three columns: 1fr for the description, 1fr for the dates, and a third column for spacing/alignment */
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    /* Default group spans one column */
+    grid-column: span 1;
+    margin-bottom: 10px; 
+}
+
+/* Make the Description group span two rows (down the left side) */
+.description-group {
+    grid-row: span 2; 
+}
+
+/* Group the date inputs into a single column on the right */
+.form-group-date-column {
+    grid-column: 3 / 4; /* Place in the third column */
+    grid-row: 1 / span 3; /* Make it tall enough for all date inputs */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Spacing between date fields */
+}
+
+/* Center the buttons area and make them span the last two columns */
+.form-actions {
+    grid-column: 2 / span 2; /* Span the middle and right columns */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    padding-top: 20px;
+}
+
+/* --- 4. CLASS DAYS (M, T, W, TH, F) STYLING --- */
+
+.class-days-group {
+    grid-column: 3 / 4; /* Ensure it aligns correctly with Instructor */
+}
+
+.day-options {
+    display: flex;
+    gap: 10px;
+    padding-top: 5px;
+}
+
+.day-checkbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.day-checkbox input[type="checkbox"] {
+    display: none; /* Hide default checkbox */
+}
+
+.custom-radio {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Style for selected day */
+.day-checkbox input[type="checkbox"]:checked + .custom-radio {
+    background-color: #8c52ff; /* Purple background for selected day */
+    border-color: #8c52ff;
+    color: #fff;
+}
+
+/* --- 5. ACTION BUTTONS --- */
+
+.cancel-btn {
+    background-color: #5d5d81; /* Muted purple/gray for Cancel */
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.submit-btn {
+    background-color: #ffa500; /* Bright orange for Submit/Save */
+    color: #333;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+/* --- 6. DELETE CONFIRMATION MODAL --- */
+
+.delete-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.delete-modal-content {
+    background-color: #fff; /* White background for the box */
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.warning-title {
+    background-color: #ff8c00; /* Orange color matching your image */
+    color: #fff;
+    padding: 10px;
+    margin: -30px -30px 20px -30px; /* Extends title bar */
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 1.2em;
+}
+
+.confirmation-message {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.irreversible-message {
+    color: #e74c3c; /* Red text for warning */
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.modal-actions .cancel-btn {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+}
+
+.modal-actions .confirm-delete-btn {
+    background-color: #e74c3c; /* Red confirm button */
+    color: #fff;
+    border: none;
+}
+/* Create course style */
+

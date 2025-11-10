@@ -1,0 +1,67 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's above everything else */
+}
+
+.modal-content {
+    background-color: #333; /* Dark background for the box */
+    border: 2px solid #ff9800; /* Orange border like the screenshot */
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+.modal-header {
+    background-color: #ff9800; /* Orange background for the header/warning bar */
+    padding: 10px;
+    margin: -20px -20px 10px -20px;
+    text-align: center;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.warning-title {
+    color: black;
+    margin: 0;
+}
+
+.danger-text {
+    color: #e74c3c; /* Red text for the warning message */
+    font-weight: bold;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.confirm-btn, .cancel-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.confirm-btn {
+    background-color: #e74c3c; /* Red color for Confirm/Delete */
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #777;
+    color: white;
+}
