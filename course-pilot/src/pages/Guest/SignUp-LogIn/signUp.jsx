@@ -5,6 +5,8 @@ import "./signUp.css"
 // import { FaExpandArrowsAlt } from "react-icons/fa";
 
 const SignUp = () => {
+  const today = new Date();
+  const maxDate = new Date(today.getFullYear() - 14, today.getMonth(), today.getDate()).toISOString().split("T")[0];
   const navigate = useNavigate();
   const [status, setStatus] = useState("");
   const [formData, setFormData] = useState({
@@ -63,22 +65,24 @@ const SignUp = () => {
     <main className="signup-page">
       <CardComp title="Sign Up">
         <form onSubmit={handleSubmit} className="signup-form">
+          {status && <p className="status">{status}</p>}
           <div className="form-section">
             <h3>Personal</h3>
             <div className="form-row">
               <input className="SignUpInput" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} />
               <input className="SignUpInput" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
             </div>
+            <h3>Birth Date</h3>
             <div className="form-row">
-              <input className="SignUpInput" type="date" name="birthday" placeholder="Date of Birth" value={formData.birthday} onChange={handleChange} />
+              <input className="SignUpInput" type="date" min="1900-01-01" max={maxDate} name="birthday" placeholder="Date of Birth" value={formData.birthday} onChange={handleChange} />
             </div>
           </div>
 
           <div className="form-section">
             <h3>Contact Information</h3>
             <div className="form-row">
-              <input className="SignUpInput" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-              <input className="SignUpInput" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
+              <input className="SignUpInput" type="email" name="email" placeholder="example@email.com" value={formData.email} onChange={handleChange} />
+              <input className="SignUpInput" type="tel" name="phone" placeholder="123-456-7890" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={formData.phone} onChange={handleChange} />
             </div>
           </div>
 
@@ -100,7 +104,7 @@ const SignUp = () => {
             <button className="submit" type="submit">Submit</button>
           </div>
 
-          {status && <p className="status">{status}</p>}
+          
         </form>
       </CardComp>
     </main>
