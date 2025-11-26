@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController } from '../controllers/userControllers';
+import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, sendMessageController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController, viewMessagesController } from '../controllers/userControllers';
 
 
 const router = express.Router();
@@ -28,10 +28,10 @@ router.put('/:id', updateUserProfileController);
 router.delete('/:id/unregister', userUnregisterController);
 
 // user send message
-router.post('',);
+router.post('/:id/sendmessage', sendMessageController);
 
 // admin view messages
-router.get('',);
+router.get('/messages', viewMessagesController);
 
 
 export default router;

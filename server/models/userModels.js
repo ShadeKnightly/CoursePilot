@@ -1,10 +1,10 @@
 import { poolPromise } from "../config/db";
-import sql, { pool } from "mssql";
+import sql from "mssql";
 
 export async function getAllStudents() {
     try{
         const pool = await poolPromise;
-        const result = await pool.request().query("SELECT * FROM Users WHERE role = student");
+        const result = await pool.request().query("SELECT * FROM Users WHERE role = 'student'");
 
         return result.recordset;
     }catch(error){
@@ -36,16 +36,16 @@ export const createUser = async (firstname, lastname, email, phone, birthday, de
     .input('program', sql.NVarChar, program)
     .input('username', sql.NVarChar, username)
     .input('hashedPass', sql.NVarChar, hashedPass)
-    .query('INSERT INTO Users(firstname, lastname, email, phone, birthday, department, program, username, hashedPass) VALUES (@firstname, @lastname, @email, @phone, @birthday, @department, @program, @username, @hashedPass)');
+    .query('INSERT INTO Users(firstname, lastname, email, phone, birthday, department, program, username, password) VALUES (@firstname, @lastname, @email, @phone, @birthday, @department, @program, @username, @hashedPass)');
 }
 
 export const getAllStudentCourses = async (id) => {
     try {
-        const pool = poolPromise;
+        const pool = await poolPromise;
 
         const result = await pool.request()
             .input('id', sql.Int, id)
-            .query('SELECT * FROM Courses WHERE userId = @id');
+            .query('SELECT c.* FROM Studying s JOIN Courses c ON s.courseID = c.courseID WHERE s.userID = @id');
 
         return result.recordset;
     }catch(error){
@@ -55,25 +55,25 @@ export const getAllStudentCourses = async (id) => {
 }
 
 export const registerUserTerm = async (id, term) => {
-    const pool = poolPromise;
+    const pool = await poolPromise;
 
     await pool.request()
         .input('id', sql.Int, id)
         .input('term', sql.NVarChar, term)
-        .query('UPDATE Users SET term = @term WHERE id = @id');
+        .query('UPDATE Users SET term = @term WHERE userId = @id');
 }
 
 export const courseRegistration = async (id, courseId) =>{
-    const pool = poolPromise;
+    const pool = await poolPromise;
 
     await pool.request()
         .input('id', sql.Int, id)
         .input('courseId', sql.Int, courseId)
-        .query('INSERT INTO studying(userId, courseId) VALUES(@id, @courseId)');
+        .query('INSERT INTO Studying(userId, courseId) VALUES(@id, @courseId)');
 }
 
 export const updateProfile = async (id, phone, email) =>{
-    const pool = poolPromise;
+    const pool = await poolPromise;
 
     await pool.request()
         .input('id', sql.Int, id)
@@ -83,10 +83,28 @@ export const updateProfile = async (id, phone, email) =>{
 }
 
 export const unregisterFromCourse = async (id, courseId) =>{
-    const pool = poolPromise;
+    const pool = await poolPromise;
 
     await pool.request()
         .input('id', sql.Int, id)
         .input('courseId', sql.Int, courseId)
-        .query('DELETE FROM studying WHERE userId = @id AND courseId = @courseId');
+        .query('DELETE FROM Studying WHERE userId = @id AND courseId = @courseId');
+}
+
+export const sendMessage = async (id, message) =>{
+    const pool = await poolPromise;
+    const currentDate = new Date();
+
+    await pool.request()
+        .input('id', sql.Int, id)
+        .input('currentDate', sql.DateTime, currentDate)
+        .input('message', sql.NVarChar, message)
+        .query('INSERT INTO userMessages(userId, createdAt, msg) VALUES(@id, @currentDate, @message)');
+}
+
+export const getMessages = async () => {
+    const pool = await poolPromise;
+
+    const result = await pool.request().query('SELECT * FROM userMessages');
+    return result.recordset;
 }

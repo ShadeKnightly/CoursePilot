@@ -26,8 +26,9 @@ export const userSignInController = async (req, res) => {
 
         //set token to cookie
         res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        const { password: userPassword, ...safeUser} = user;
 
-        res.status(200).json(user);
+        res.status(200).json(safeUser);
     } catch(error){
         res.status(500).json({message: error.message});
     }
@@ -66,7 +67,7 @@ export const registerUserToTermController = async (req, res) => {
         const { id } = req.params;
         const { term } = req.body;
 
-        if(!term || isNaN(term))
+        if(!term)
             return res.status(400).json({message: 'Valid Term required' });
 
         await userModel.registerUserTerm(id, term);
@@ -81,7 +82,7 @@ export const checkoutCourseController = async (req, res) => {
         const {id} = req.params;
         const {courseId} = req.body;
 
-        if(!courseId || isNaN(courseId))
+        if(!courseId)
             return res.status(400).json({message: 'Valid course required'});
         await userModel.courseRegistration(id, courseId);
         res.status(200).json({message: 'course successfully registered'});
@@ -95,9 +96,9 @@ export const updateUserProfileController = async (req, res) => {
         const { id } = req.params;
         const { phone, email } = req.body
 
-        if(!phone || isNaN(phone))
+        if(!phone)
             return res.status(400).json({message: 'Valid phone number required'});
-        if(!email || isNaN(email))
+        if(!email)
             return res.status(400).json({message: 'Valid email required'});
 
         await userModel.updateProfile(id, phone, email);
@@ -118,6 +119,30 @@ export const userUnregisterController = async (req, res) => {
         res.status(200).json({message: 'course successfully unregistered'});
 
     }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
 
+export const sendMessageController = async (req, res) =>{
+    try{
+        const { id } = req.params;
+        const { message } = req.body;
+
+        if(!message){
+            return res.status(400).json({message: 'Valid message required'})
+        }
+        await userModel.sendMessage(id, message);
+        res.status(200).json({message: 'message sent'});
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
+
+export const viewMessagesController = async (req, res) =>{
+    try{
+        const messages = await userModel.getMessages();
+        res.status(200).json(messages);
+    }catch(error){
+        res.status(500).json({message: error.message});
     }
 }
