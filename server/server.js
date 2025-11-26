@@ -22,4 +22,3 @@ app.listen(config.port, () => {
     console.log(`Server running on port ${config.port}`);
 });
 
-const pool = await poolPromise;

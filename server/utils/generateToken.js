@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import config from '../config/config';
+import config from '../config/config.js';
 
 const generateToken = (user) => {
   // Create a token payload using user information

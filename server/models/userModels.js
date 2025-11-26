@@ -1,4 +1,4 @@
-import { poolPromise } from "../config/db";
+import { poolPromise } from "../config/db.js";
 import sql from "mssql";
 
 export async function getAllStudents() {

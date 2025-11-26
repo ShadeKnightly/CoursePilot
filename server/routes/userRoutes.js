@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, sendMessageController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController, viewMessagesController } from '../controllers/userControllers';
+import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, sendMessageController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController, viewMessagesController } from '../controllers/userControllers.js';
 
 
 const router = express.Router();

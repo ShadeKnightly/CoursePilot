@@ -1,7 +1,6 @@
 import bcrypt, { hash } from 'bcrypt';
 import * as userModel from '../models/userModels.js';
 import generateToken from '../utils/generateToken.js';
-import { useMemo } from 'react';
 
 export const getStudentsController = async (req, res) =>{
     try{
