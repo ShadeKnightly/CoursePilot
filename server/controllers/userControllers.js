@@ -1,4 +1,4 @@
-import bcrypt, { hash } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import * as userModel from '../models/userModels.js';
 import generateToken from '../utils/generateToken.js';
 
