@@ -27,13 +27,13 @@ export const createUser = async (firstname, lastname, email, phone, birthday, de
     const pool = await poolPromise;
 
     await pool.request()
-    .input('firstname', sql.NVarChar, firstname)
-    .input('lastname', sql.NVarChar, lastname)
+    .input('firstname', sql.VarChar, firstname)
+    .input('lastname', sql.VarChar, lastname)
     .input('email', sql.NVarChar, email)
-    .input('phone', sql.VarChar, phone)
-    .input('birthday', sql.DateTime, birthday)
-    .input('department', sql.NVarChar, department)
-    .input('program', sql.NVarChar, program)
+    .input('phone', sql.NVarChar, phone)
+    .input('birthday', sql.Date, birthday)
+    .input('department', sql.VarChar, department)
+    .input('program', sql.VarChar, program)
     .input('username', sql.NVarChar, username)
     .input('hashedPass', sql.NVarChar, hashedPass)
     .query('INSERT INTO Users(firstname, lastname, email, phone, birthday, department, program, username, password) VALUES (@firstname, @lastname, @email, @phone, @birthday, @department, @program, @username, @hashedPass)');

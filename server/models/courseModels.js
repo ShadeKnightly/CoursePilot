@@ -1,5 +1,5 @@
-import { poolPromise } from "../config/db";
-import sql, { pool } from 'mssql';
+import { poolPromise } from "../config/db.js";
+import sql from 'mssql';
 
 export const getAllCourses = async () => {
     const pool = await poolPromise;
@@ -23,7 +23,7 @@ export const createCourse = async (code, name, term, dateRange, desc) => {
         .input('term', sql.VarChar, term)
         .input('dateRange', sql.VarChar, dateRange)
         .input('desc', sql.VarChar, desc)
-        .query("INSERT INTO Courses(courseCode, CourseName, term, dateRange, c_Description) VALUES (@code, @name, @term, @dateRange, @desc");
+        .query("INSERT INTO Courses(courseCode, CourseName, term, dateRange, c_Description) VALUES (@code, @name, @term, @dateRange, @desc)");
 }
 
 export const updateCourse = async(id, code, name, term, dateRange, desc) => {
@@ -36,7 +36,7 @@ export const updateCourse = async(id, code, name, term, dateRange, desc) => {
         .input('term', sql.VarChar, term)
         .input('dateRange', sql.VarChar, dateRange)
         .input('desc', sql.VarChar, desc)
-        .query("UPDATE Courses SET courseCode = @code, CourseName = @name, term = @term, dateRange = @dateRange, c_Description = @desc WHERE coursesID = @id");
+        .query("UPDATE Courses SET courseCode = @code, CourseName = @name, term = @term, dateRange = @dateRange, c_Description = @desc WHERE courseID = @id");
 }
 
 export const deleteCourse = async (id) => {
@@ -44,7 +44,7 @@ export const deleteCourse = async (id) => {
     try{
         await pool.request()
             .input('id', sql.Int, id)
-            .query("DELETE FROM Courses WHERE coursesID = @id");
+            .query("DELETE FROM Courses WHERE courseID = @id");
     } catch(error){
         if(error.number === 547){
             return{

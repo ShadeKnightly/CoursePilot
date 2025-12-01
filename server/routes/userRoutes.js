@@ -16,19 +16,19 @@ router.post('/signIn', userSignInController);
 router.get('/:id/courses', getStudentCoursesController);
 
 // user term registration
-router.post('/:id/registration', registerUserToTermController);
+router.patch('/:id/registration', registerUserToTermController);
 
 // user course registration(course checkout)
 router.post('/:id/checkout', checkoutCourseController);
 
 // user update profile
-router.put('/:id', updateUserProfileController);
+router.patch('/:id/profile', updateUserProfileController);
 
 // user delete course(unregister)
 router.delete('/:id/unregister', userUnregisterController);
 
 // user send message
-router.post('/:id/sendmessage', sendMessageController);
+router.post('/messages/:id', sendMessageController);
 
 // admin view messages
 router.get('/messages', viewMessagesController);

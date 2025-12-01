@@ -1,4 +1,4 @@
-import * as courseModel from '../models/courseModels';
+import * as courseModel from '../models/courseModels.js';
 
 export const getProgramsController = async (req, res) =>{
     try{
