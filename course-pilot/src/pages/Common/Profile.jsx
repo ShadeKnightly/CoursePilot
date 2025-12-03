@@ -8,6 +8,7 @@ const Profile = () => {
   const user = currentUser;
 
   // Simulate button logic
+  /*
   const handleEditProfile = () => {
     const updatedEmail = prompt("Enter new email:", user.email);
     const updatedPhone = prompt("Enter new phone number:", user.phone);
@@ -31,6 +32,59 @@ const Profile = () => {
 
     alert("Profile updated successfully!");
   };
+  */
+
+  const handleEditProfile = () => {
+  const user = currentUser;
+
+  // Validate email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  let updatedEmail = user.email;
+
+  while (true) {
+    const input = prompt("Enter new email:", updatedEmail);
+    if (input === null) return; // user clicked Cancel
+    if (emailRegex.test(input)) {
+      updatedEmail = input;
+      break;
+    } else {
+      alert("Invalid email format. Please try again.");
+    }
+  }
+
+  // Validate phone
+  const phoneRegex = /^\d{10}$/; // 10-digit numbers only
+  let updatedPhone = user.phone;
+
+  while (true) {
+    const input = prompt("Enter new phone number:", updatedPhone);
+    if (input === null) return; // user clicked Cancel
+    if (phoneRegex.test(input)) {
+      updatedPhone = input;
+      break;
+    } else {
+      alert("Invalid phone number format. Must be 10 digits. Please try again.");
+    }
+  }
+
+  // Update current user data
+  const updatedUser = { ...user, email: updatedEmail, phone: updatedPhone };
+
+  // Update in localStorage
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const updatedUsers = users.map((u) =>
+    u.username === user.username ? updatedUser : u
+  );
+  localStorage.setItem("users", JSON.stringify(updatedUsers));
+
+  // Update in context
+  setCurrentUser(updatedUser);
+
+  alert("Profile updated successfully!");
+};
+
+
+
 
   const handleResetPassword = () => {
   const newPassword = prompt("Enter your new password:");
