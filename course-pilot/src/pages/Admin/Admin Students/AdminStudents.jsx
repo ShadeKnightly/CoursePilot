@@ -100,13 +100,37 @@ const AdminStudents = () => {
     };
     
     // Handler for filtering logic (placeholder)
+    /*
     const handleFilterStudents = (filters) => {
         console.log("Filtering students with:", filters);
         // TODO: Implement actual filtering logic here using the 'filters' object
         // setFilteredStudents(filteredResult);
         setFilteredStudents(students); // Currently displays all students
     };
-    
+    */
+
+    const handleFilterStudents = (filters) => {
+    const { name, id, program } = filters;
+
+    const filtered = students.filter((student) => {
+        const matchesName =
+            name === "" ||
+            student.name.toLowerCase().includes(name.toLowerCase());
+
+        const matchesId =
+            id === "" ||
+            student.id.toString().includes(id.toString());
+
+        const matchesProgram =
+            program === "" || student.program === program;
+
+        return matchesName && matchesId && matchesProgram;
+    });
+
+    setFilteredStudents(filtered);
+};
+
+
     const listHeader = () => <h3 className="card-header-title">Students</h3>;
 
 
