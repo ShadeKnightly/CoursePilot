@@ -4,7 +4,6 @@ import { UserContext } from "../../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import CardComp from "../../../components/card/cardComponent";
 import "./signUp.css"
-import { users as mockUsers } from "../../../data";
 
 
 const LogIn = () => {
@@ -12,62 +11,60 @@ const LogIn = () => {
   const [status, setStatus] = useState("");
   const { setCurrentUser } = useContext(UserContext);
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    birthday: "",
-    department: "Software Development",
-    program: "",
     username: "",
     password: "",
   });
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Check if all fields are filled
-  if (!formData.email || !formData.password) {
-    setStatus("Please fill all fields.");
-    return;
-  }
+    // Check if all fields are filled
+    if (!formData.username || !formData.password) {
+      setStatus("Please fill all fields.");
+      return;
+    }
 
-  setStatus("Signing In...");
+    setStatus("Signing In...");
 
-  // Simulate delay
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const payload = {
+        username: formData.username,
+        password: formData.password,
+      };
 
-  // Retrieve all users
-  const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  const allUsers = [...mockUsers, ...(storedUsers || [])];
+      const res = await fetch(`${API_BASE}/user/auth/signIn`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-  // Find user that matches email/username + password
-  const matchedUser = allUsers.find(
-    (u) =>
-      (u.email === formData.email || u.username === formData.email) &&
-      u.password === formData.password
-  );
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || err.error || `Server error: ${res.status}`);
+      }
 
-  if (!matchedUser) {
-    setStatus("Invalid email/username or password.");
-    return;
-  }
+      const data = await res.json();
+      
+      // Save logged-in user to current session 
+      localStorage.setItem("currentUser", JSON.stringify(data));
+      setCurrentUser(data);
+      
+      setStatus(`Welcome back, ${data.username || data.email}!`);
 
-  // Save logged-in user to current session
-  localStorage.setItem("currentUser", JSON.stringify(matchedUser));
-  setCurrentUser(matchedUser);
-
-  setStatus(`Welcome back, ${matchedUser.username || matchedUser.email}!`);
-
-  // Redirect after success
-  setTimeout(() => {
-    navigate("/dashboard");
-  }, 1000);
-};
+      // Redirect after success
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1500);
+    } catch (error) {
+      setStatus(`Sign in failed: ${error.message}`);
+      setTimeout(() => setStatus(""), 4000);
+    }
+  };
 
 
   return (
@@ -76,7 +73,7 @@ const LogIn = () => {
         <form onSubmit={handleSubmit} className="signup-form">
           <div className="form-section">
             <div className="form-row">
-              <input className="SignUpInput" name="email" placeholder="Email/Username" value={formData.email} onChange={handleChange} />
+              <input className="SignUpInput" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
             </div>
           </div>
           <div className="form-section">
@@ -86,7 +83,9 @@ const LogIn = () => {
           </div>
 
           <div className="form-actions">
-            <button className="submit" type="submit">Submit</button>
+            <button className="submit" type="submit" disabled={status === "Signing In..."}>{
+              status === "Signing In..." ? "Signing In..." : "Submit"
+            }</button>
           </div>
 
           {status && <p className="status">{status}</p>}

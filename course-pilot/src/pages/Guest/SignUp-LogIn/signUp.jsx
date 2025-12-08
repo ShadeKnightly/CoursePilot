@@ -6,7 +6,7 @@ import "./signUp.css"
 
 const SignUp = () => {
   const navigate = useNavigate();
-  //const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,7 +19,8 @@ const SignUp = () => {
     password: "",
   });
 
-   const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({});
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:3000";
 
   // handleChange
 const handleChange = (e) => {
@@ -104,19 +105,42 @@ const validateField = (name, value) => {
       return;
     }
 
+    setStatus("Creating account...");
 
-    // Simulate delay / user creation
-    setTimeout(() => {
-      const studentId = "S" + Math.floor(Math.random() * 1000000);
-      const newUser = { ...formData, studentId, role: "student" };
+    try {
+      const payload = {
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        birthday: formData.birthday,
+        department: formData.department,
+        program: formData.program,
+        username: formData.username,
+        password: formData.password,
+      };
 
-      const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-      existingUsers.push(newUser);
-      localStorage.setItem("users", JSON.stringify(existingUsers));
+      const res = await fetch(`${API_BASE}/user/auth/signUp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-      alert("Sign Up successful! Redirecting to login...");
-      navigate("/login");
-    }, 500);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || err.error || `Server error: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setStatus("Sign up successful! Redirecting to login...");
+      
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      setStatus(`Sign up failed: ${error.message}`);
+      setTimeout(() => setStatus(""), 4000);
+    }
   };
 
 
@@ -241,8 +265,11 @@ const validateField = (name, value) => {
           </div>
 
           <div className="form-actions">
-            <button className="submit" type="submit">Submit</button>
+            <button className="submit" type="submit" disabled={status === "Creating account..."}>
+              {status === "Creating account..." ? "Submitting..." : "Submit"}
+            </button>
           </div>
+          {status && <p className="status">{status}</p>}
         </form>
       </CardComp>
     </main>
