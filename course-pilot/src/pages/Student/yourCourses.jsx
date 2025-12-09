@@ -13,42 +13,43 @@ const UserCourses = () => {
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 
-  const fetchUserCourses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      if(!currentUser) {
-        throw new Error("User not logged in");
-      }
 
-      const res = await fetch(`${API_BASE}/user/auth/${currentUser.userID}/courses`);
 
-      if(!res.ok) {
-        throw new Error(`Error fetching courses: ${res.statusText}`);
-      }
-
-      const data = await res.json();
-      return data || [];
-    }catch(error) {
-      console.error("Failed to fetch courses:", error);
-      setError(error.message);
-      return [];
-    }finally{
-      setLoading(false);
-    }
-  };
-  
-   useEffect(() => {
+  useEffect(() => {
     if (!currentUser) {
       navigate("/login");
       return;
+    }
+    const fetchUserCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        if (!currentUser) {
+          throw new Error("User not logged in");
+        }
+
+        const res = await fetch(`${API_BASE}/user/auth/${currentUser.userID}/courses`);
+
+        if (!res.ok) {
+          throw new Error(`Error fetching courses: ${res.statusText}`);
+        }
+
+        const data = await res.json();
+        return data || [];
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError(error.message);
+        return [];
+      } finally {
+        setLoading(false);
+      }
     }
     const loadCourses = async () => {
       const data = await fetchUserCourses();
       const userTerm = currentUser?.selectedTerm || "";
       let filteredByTerm = data;
 
-      if(userTerm){
+      if (userTerm) {
         filteredByTerm = data.filter((course) =>
           course.term?.toLowerCase().includes(userTerm.toLowerCase())
         );
@@ -56,7 +57,7 @@ const UserCourses = () => {
       setCourses(filteredByTerm);
     };
     loadCourses();
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, API_BASE]);
 
 
   const handleRemove = async (courseId) => {

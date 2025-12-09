@@ -18,46 +18,47 @@ const CourseCart = () => {
       navigate("/login");
       return;
     }
-    fetchCartCourses();
-  }, [currentUser, navigate]);
+    const fetchCartCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const fetchCartCourses = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+        // Get cart items from localStorage
+        const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
+        const cartCourseIds = storedData[currentUser.userID]?.cart || [];
 
-      // Get cart items from localStorage
-      const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
-      const cartCourseIds = storedData[currentUser.userID]?.cart || [];
+        if (cartCourseIds.length === 0) {
+          setCourses([]);
+          setLoading(false);
+          return;
+        }
 
-      if (cartCourseIds.length === 0) {
-        setCourses([]);
+        // Fetch all courses from backend
+        const res = await fetch(`${API_BASE}/course/auth/courses`);
+
+        if (!res.ok) {
+          throw new Error(`Error fetching courses: ${res.statusText}`);
+        }
+
+        const allCourses = await res.json();
+
+        // Filter to only cart courses
+        const cartCourses = allCourses.filter(course =>
+          cartCourseIds.includes(course.courseID)
+        );
+
+        setCourses(cartCourses || []);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError(error.message);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // Fetch all courses from backend
-      const res = await fetch(`${API_BASE}/course/auth/courses`);
-
-      if (!res.ok) {
-        throw new Error(`Error fetching courses: ${res.statusText}`);
-      }
-
-      const allCourses = await res.json();
-      
-      // Filter to only cart courses
-      const cartCourses = allCourses.filter(course => 
-        cartCourseIds.includes(course.courseID)
-      );
-
-      setCourses(cartCourses || []);
-    } catch (error) {
-      console.error("Failed to fetch courses:", error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
     }
-  };
+    fetchCartCourses();
+  }, [currentUser, navigate, API_BASE]);
+
+
 
   const handleRemove = (courseId) => {
     // Remove from localStorage cart
@@ -70,7 +71,7 @@ const CourseCart = () => {
       cart: updated,
     };
     localStorage.setItem("userCourses", JSON.stringify(storedData));
-    
+
     // Remove from state
     setCourses((prev) => prev.filter((c) => c.courseID !== courseId));
   };

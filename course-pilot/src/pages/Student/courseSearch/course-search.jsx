@@ -18,29 +18,6 @@ const CourseSearch = () => {
   const [error, setError] = useState(null);
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-
-
-  // Simulate fetching courses from mock database
-  const fetchAllCourses = async () => {
-    try{
-      setLoading(true);
-      setError(null);
-      const response = await fetch(`${API_BASE}/course/auth/courses`);
-
-      if (!response.ok) {
-        throw new Error(`Error fetching courses: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data || [];
-    }catch (error){
-      console.error("Failed to fetch courses:", error);
-      setError(error.message);
-      return [];
-    }finally {
-      setLoading(false);
-    }
-  };
   // Fetch courses and user
   useEffect(() => {
     if (!currentUser) {
@@ -48,21 +25,43 @@ const CourseSearch = () => {
       return;
     }
 
+    const fetchAllCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch(`${API_BASE}/course/auth/courses`);
+
+        if (!response.ok) {
+          throw new Error(`Error fetching courses: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data || [];
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError(error.message);
+        return [];
+      } finally {
+        setLoading(false);
+      }
+    };
+
     const loadCourses = async () => {
       const data = await fetchAllCourses();
       const userTerm = currentUser?.selectedTerm || "";
       let filteredByTerm = data;
 
-      if(userTerm){
+      if (userTerm) {
         filteredByTerm = data.filter((course) =>
           course.term?.toLowerCase().includes(userTerm.toLowerCase())
         );
       }
       setCourses(filteredByTerm);
       setFilteredCourses(filteredByTerm);
-    }
+    };
+
     loadCourses();
-  }, [navigate, currentUser]);
+  }, [navigate, currentUser, API_BASE]);
 
   // One unified filtering effect (for search + dropdown)
   useEffect(() => {
@@ -70,14 +69,14 @@ const CourseSearch = () => {
 
     const searchValue = searchField.toLowerCase();
 
-    const filtered = courses.filter((course) => 
-      // Search in key fields, handles undefined fields safely
-      (course.courseCode?.toLowerCase().includes(searchValue) ||
-       course.CourseName?.toLowerCase().includes(searchValue) ||
-       course.c_Description?.toLowerCase().includes(searchValue) ||
-       course.term?.toLowerCase().includes(searchValue))
+    const filtered = courses.filter((course) =>
+    // Search in key fields, handles undefined fields safely
+    (course.courseCode?.toLowerCase().includes(searchValue) ||
+      course.CourseName?.toLowerCase().includes(searchValue) ||
+      course.c_Description?.toLowerCase().includes(searchValue) ||
+      course.term?.toLowerCase().includes(searchValue))
     );
-    
+
     setFilteredCourses(filtered);
   }, [courses, searchField]);
 
@@ -86,12 +85,12 @@ const CourseSearch = () => {
 
   const handleRemove = (courseId) => {
     console.log(`Removed course with ID: ${courseId}`);
-    setCourses((prev) => prev.filter((course) => course.id !== courseId));
+    setCourses((prev) => prev.filter((course) => course.courseID !== courseId));
   };
 
   return (
     <main style={{ padding: "2rem" }}>
-       <CardComp title={currentUser ? "Search Courses" : "All Courses"}>
+      <CardComp title={currentUser ? "Search Courses" : "All Courses"}>
         {loading ? (
           <p>Loading courses...</p>
         ) : error ? (
@@ -101,15 +100,15 @@ const CourseSearch = () => {
         ) : (
           <>
             <SearchBox placeholder="Search" onChangeHandler={onSearchChange} />
-             {/* Only back button if a user is signed in */}
-          {currentUser && (
-            <button
-              className="BackToReg"
-              onClick={() => navigate("/courseSelect")}
-            >
-              ← Back to Course Registration
-            </button>
-          )}
+            {/* Only back button if a user is signed in */}
+            {currentUser && (
+              <button
+                className="BackToReg"
+                onClick={() => navigate("/courseSelect")}
+              >
+                ← Back to Course Registration
+              </button>
+            )}
             {filteredCourses.length > 0 ? (
               filteredCourses.map((course) => (
                 <ClassItem
@@ -121,7 +120,7 @@ const CourseSearch = () => {
                   program={course.program}
                   description={course.c_Description}
                   onRemove={() => handleRemove(course.courseID)}
-                  isSignedIn={!!currentUser} //convert null/undefined to false valid user object into true.
+                  isSignedIn={!!currentUser}
                 />
               ))
             ) : (

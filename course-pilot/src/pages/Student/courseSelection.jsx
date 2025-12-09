@@ -16,26 +16,7 @@ const CourseSelection = () => {
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   // Fetch all courses from backend
-  const fetchAllCourses = async () => {
-    try{
-      setLoading(true);
-      setError(null);
-      const response = await fetch(`${API_BASE}/course/auth/courses`);
 
-      if (!response.ok) {
-        throw new Error(`Error fetching courses: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data || [];
-    } catch (error) {
-      console.error("Failed to fetch courses:", error);
-      setError(error.message);
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Load user courses (cart) from localStorage
   const loadUserCourses = (userId) => {
@@ -64,6 +45,26 @@ const CourseSelection = () => {
     // Load existing cart for this user
     const existingCourses = loadUserCourses(currentUser.userID);
     setUserCourses(existingCourses);
+    const fetchAllCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch(`${API_BASE}/course/auth/courses`);
+
+        if (!response.ok) {
+          throw new Error(`Error fetching courses: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data || [];
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError(error.message);
+        return [];
+      } finally {
+        setLoading(false);
+      }
+    }
 
     // Fetch and filter courses by term
     fetchAllCourses().then((data) => {
@@ -72,7 +73,7 @@ const CourseSelection = () => {
       );
       setCourses(filtered);
     });
-  }, [navigate, currentUser]);
+  }, [navigate, currentUser, API_BASE]);
 
   const handleAdd = (courseId) => {
     if (!userCourses.includes(courseId)) {
