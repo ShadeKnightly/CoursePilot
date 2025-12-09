@@ -20,7 +20,7 @@ const SignUp = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:3000";
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   // handleChange
 const handleChange = (e) => {
@@ -131,7 +131,7 @@ const validateField = (name, value) => {
         throw new Error(err.message || err.error || `Server error: ${res.status}`);
       }
 
-      const data = await res.json();
+      //const data = await res.json();
       setStatus("Sign up successful! Redirecting to login...");
       
       setTimeout(() => {

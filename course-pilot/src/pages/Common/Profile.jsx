@@ -88,7 +88,7 @@ const Profile = () => {
 
   const handleResetPassword = () => {
   const newPassword = prompt("Enter your new password:");
-  if (!newPassword || newPassword.length < 6) {
+  if (!newPassword || newPassword.trim().length < 6) {
     alert("Password must be at least 6 characters long.");
     return;
   }
@@ -117,7 +117,7 @@ const Profile = () => {
           <p><strong>Phone:</strong> {user.phone}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Birthdate:</strong> {user.birthday}</p>
-          <p><strong>Password:</strong> {"*".repeat(user.password.length)}</p>
+          <p><strong>Password:</strong> {user.password ? "*".repeat(user.password.length) : "••••••"}</p>
         </div>
 
         <div className="button-container" style={{ marginTop: "2rem", textAlign: "right" }}>
