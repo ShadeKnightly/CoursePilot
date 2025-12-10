@@ -15,9 +15,6 @@ const CourseSelection = () => {
   const [error, setError] = useState(null);
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-  // Fetch all courses from backend
-
-
   // Load user courses (cart) from localStorage
   const loadUserCourses = (userId) => {
     const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
@@ -68,21 +65,50 @@ const CourseSelection = () => {
       }
     }
 
-    // Fetch and filter courses by term + department/program
-    fetchAllCourses().then((data) => {
-      const filtered = data.filter((course) => {
-        const termMatch = selectedTerm
-          ? (course.term || "").toLowerCase().includes(selectedTerm.toLowerCase())
-          : true;
+    const fetchRegisteredCourses = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/user/auth/${userId}/courses`);
+        if (!res.ok) throw new Error(`Error fetching registered courses: ${res.statusText}`);
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
+      } catch (err) {
+        console.error("Failed to fetch registered courses:", err);
+        return [];
+      }
+    };
 
-        const courseProgramId = course.programID ? course.programID.toString() : "";
-        //console.log(`Course Program ID: ${courseProgramId}, User Program ID: ${userProgramId}`);
-        const programMatch = userProgramId ? courseProgramId === userProgramId : true;
+    const load = async () => {
+      try {
+        const [allCourses, registered] = await Promise.all([
+          fetchAllCourses(),
+          fetchRegisteredCourses(),
+        ]);
 
-        return termMatch && programMatch;
-      });
-      setCourses(filtered);
-    });
+        const registeredSet = new Set(registered.map((c) => normalizeId(c.courseID)));
+
+        const filtered = allCourses.filter((course) => {
+          const termMatch = selectedTerm
+            ? (course.term || "").toLowerCase().includes(selectedTerm.toLowerCase())
+            : true;
+
+          const courseProgramId = course.programID ? course.programID.toString() : "";
+          const programMatch = userProgramId ? courseProgramId === userProgramId : true;
+
+          const notRegistered = !registeredSet.has(normalizeId(course.courseID));
+
+          return termMatch && programMatch && notRegistered;
+        });
+
+        setCourses(filtered);
+      } catch (err) {
+        console.error("Failed to load courses:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
   }, [navigate, currentUser, API_BASE]);
 
   const normalizeId = (id) => {
@@ -143,7 +169,7 @@ const CourseSelection = () => {
                 onAdd={() => handleAdd(course.courseID)}
                 onRemove={() => handleRemove(course.courseID)}
                 isSignedIn={!!currentUser}
-                isInCart={userCourses?.includes(course.courseID)}
+                isInCart={userCourses?.map(normalizeId).includes(normalizeId(course.courseID))}
               />
             ))}
           </>

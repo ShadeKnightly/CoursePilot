@@ -86,3 +86,14 @@
   cursor: pointer;
   font-weight: bold;
 }
+
+.in-cart-btn {
+  background-color: #6c757d;
+  color: white;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.in-cart-btn:hover {
+  background-color: #6c757d;
+}
