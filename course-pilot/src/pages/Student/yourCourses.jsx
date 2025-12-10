@@ -12,9 +12,6 @@ const UserCourses = () => {
   const [error, setError] = useState(null);
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-
-
-
   useEffect(() => {
     if (!currentUser) {
       navigate("/login");
@@ -105,7 +102,7 @@ const UserCourses = () => {
                 name={course.CourseName}
                 term={course.term}
                 startEnd={course.dateRange}
-                program={course.program}
+                program={course.title}
                 description={course.c_Description}
                 onRemove={() => handleRemove(course.courseID)}
                 isSignedIn={!!currentUser} //convert null/undefined to false valid user object into true.

@@ -40,10 +40,12 @@ const CourseSelection = () => {
     }
 
     const selectedTerm = currentUser?.selectedTerm || "";
+    const userProgramId = currentUser?.program ? currentUser.program.toString() : "";
+    const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
     setUserTerm(selectedTerm);
 
     // Load existing cart for this user
-    const existingCourses = loadUserCourses(currentUser.userID);
+    const existingCourses = loadUserCourses(userId);
     setUserCourses(existingCourses);
     const fetchAllCourses = async () => {
       try {
@@ -66,29 +68,47 @@ const CourseSelection = () => {
       }
     }
 
-    // Fetch and filter courses by term
+    // Fetch and filter courses by term + department/program
     fetchAllCourses().then((data) => {
-      const filtered = data.filter((course) =>
-        (course.term || "").toLowerCase().includes(selectedTerm.toLowerCase())
-      );
+      const filtered = data.filter((course) => {
+        const termMatch = selectedTerm
+          ? (course.term || "").toLowerCase().includes(selectedTerm.toLowerCase())
+          : true;
+
+        const courseProgramId = course.programID ? course.programID.toString() : "";
+        //console.log(`Course Program ID: ${courseProgramId}, User Program ID: ${userProgramId}`);
+        const programMatch = userProgramId ? courseProgramId === userProgramId : true;
+
+        return termMatch && programMatch;
+      });
       setCourses(filtered);
     });
   }, [navigate, currentUser, API_BASE]);
 
+  const normalizeId = (id) => {
+    const n = Number(id);
+    return Number.isNaN(n) ? id : n;
+  };
+
   const handleAdd = (courseId) => {
-    if (!userCourses.includes(courseId)) {
-      const updated = [...userCourses, courseId];
+    const cid = normalizeId(courseId);
+    const normalized = userCourses.map(normalizeId);
+    if (!normalized.includes(cid)) {
+      const updated = [...new Set([...normalized, cid])];
       setUserCourses(updated);
-      saveUserCourses(currentUser.userID, updated);
-      console.log(`Added course ID: ${courseId}`);
+      const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
+      saveUserCourses(userId, updated);
+      console.log(`Added course ID: ${cid}`);
     }
   };
 
   const handleRemove = (courseId) => {
-    const updated = userCourses.filter((id) => id !== courseId);
+    const cid = normalizeId(courseId);
+    const updated = userCourses.map(normalizeId).filter((id) => id !== cid);
     setUserCourses(updated);
-    saveUserCourses(currentUser.userID, updated);
-    console.log(`Removed course ID: ${courseId}`);
+    const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
+    saveUserCourses(userId, updated);
+    console.log(`Removed course ID: ${cid}`);
   };
 
   return (
@@ -118,7 +138,7 @@ const CourseSelection = () => {
                 name={course.CourseName}
                 term={course.term}
                 startEnd={course.dateRange}
-                program={course.program}
+                program={course.title}
                 description={course.c_Description}
                 onAdd={() => handleAdd(course.courseID)}
                 onRemove={() => handleRemove(course.courseID)}

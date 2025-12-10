@@ -117,7 +117,7 @@ const CourseSearch = () => {
                   name={course.CourseName}
                   term={course.term}
                   startEnd={course.dateRange}
-                  program={course.program}
+                  program={course.title}
                   description={course.c_Description}
                   onRemove={() => handleRemove(course.courseID)}
                   isSignedIn={!!currentUser}

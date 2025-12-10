@@ -23,9 +23,17 @@ const CourseCart = () => {
         setLoading(true);
         setError(null);
 
-        // Get cart items from localStorage
+        const normalizeId = (id) => {
+          const n = Number(id);
+          return Number.isNaN(n) ? id : n;
+        };
+
+        const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
+
+        // Get cart items from localStorage and normalize/dedupe IDs
         const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
-        const cartCourseIds = storedData[currentUser.userID]?.cart || [];
+        const cartCourseIdsRaw = storedData[userId]?.cart || [];
+        const cartCourseIds = Array.from(new Set(cartCourseIdsRaw.map(normalizeId)));
 
         if (cartCourseIds.length === 0) {
           setCourses([]);
@@ -42,10 +50,18 @@ const CourseCart = () => {
 
         const allCourses = await res.json();
 
+        // Dedupe courses by courseID (backend may return duplicates from JOIN)
+        const seenIds = new Set();
+        const uniqueCourses = allCourses.filter((course) => {
+          const cid = normalizeId(course.courseID);
+          if (seenIds.has(cid)) return false;
+          seenIds.add(cid);
+          return true;
+        });
+
         // Filter to only cart courses
-        const cartCourses = allCourses.filter(course =>
-          cartCourseIds.includes(course.courseID)
-        );
+        const idSet = new Set(cartCourseIds.map(normalizeId));
+        const cartCourses = uniqueCourses.filter((course) => idSet.has(normalizeId(course.courseID)));
 
         setCourses(cartCourses || []);
       } catch (error) {
@@ -61,19 +77,24 @@ const CourseCart = () => {
 
 
   const handleRemove = (courseId) => {
-    // Remove from localStorage cart
+    const normalizeId = (id) => {
+      const n = Number(id);
+      return Number.isNaN(n) ? id : n;
+    };
+
+    const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
     const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
-    const updated = (storedData[currentUser.userID]?.cart || []).filter(
-      (id) => id !== courseId
-    );
-    storedData[currentUser.userID] = {
-      ...storedData[currentUser.userID],
+    const updated = (storedData[userId]?.cart || [])
+      .map(normalizeId)
+      .filter((id) => id !== normalizeId(courseId));
+
+    storedData[userId] = {
+      ...storedData[userId],
       cart: updated,
     };
     localStorage.setItem("userCourses", JSON.stringify(storedData));
 
-    // Remove from state
-    setCourses((prev) => prev.filter((c) => c.courseID !== courseId));
+    setCourses((prev) => prev.filter((c) => normalizeId(c.courseID) !== normalizeId(courseId)));
   };
 
   const handleConfirmRegistration = async () => {

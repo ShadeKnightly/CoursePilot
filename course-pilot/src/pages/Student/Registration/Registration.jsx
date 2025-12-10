@@ -13,9 +13,10 @@ const Registration = () => {
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   useEffect(() => {
-    // If user has a term and is not editing, set it
-    if (currentUser?.selectedTerm && !isEditing) {
-      setTerm(currentUser.selectedTerm);
+    // If user already has a term (from DB or context) and not editing, populate it
+    const existingTerm = currentUser?.selectedTerm || currentUser?.term || "";
+    if (existingTerm && !isEditing) {
+      setTerm(existingTerm);
     }
   }, [currentUser, isEditing]);
 
@@ -29,10 +30,14 @@ const Registration = () => {
 
     setStatus("Saving your term selection...");
     try {
+      const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
+      if (!userId) {
+        throw new Error("Missing user ID; please sign in again.");
+      }
       const payload = {
         term: term
       };
-      const res = await fetch(`${API_BASE}/user/auth/${currentUser.userID}/registration`, {
+      const res = await fetch(`${API_BASE}/user/auth/${userId}/registration`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -46,7 +51,7 @@ const Registration = () => {
       setStatus("Term selection saved successfully!");
 
       // Update current user in context and localStorage
-      const updatedUser = { ...currentUser, selectedTerm: term };
+      const updatedUser = { ...currentUser, selectedTerm: term, term };
       setCurrentUser(updatedUser);
       localStorage.setItem("currentUser", JSON.stringify(updatedUser));
 
@@ -81,12 +86,12 @@ const Registration = () => {
     <main className="registration-page">
       <CardComp title="Course Registration">
         <div className="registration-inner">
-          <CardComp title={currentUser?.selectedTerm ? "Your Selected Term" : "Select a Term"}>
-            {!currentUser?.selectedTerm || isEditing ? (
+          <CardComp title={currentUser?.selectedTerm || currentUser?.term ? "Your Selected Term" : "Select a Term"}>
+            {(!currentUser?.selectedTerm && !currentUser?.term) || isEditing ? (
               // Show form when no term selected or editing
               <>
                 <p className="registration-text">
-                  {currentUser?.selectedTerm && isEditing
+                  {(currentUser?.selectedTerm || currentUser?.term) && isEditing
                     ? "Change your term selection:"
                     : "Before registering for courses, please select which term you plan to register for:"}
                 </p>
@@ -108,7 +113,7 @@ const Registration = () => {
                     <button className="RegSubmit" type="submit">
                       Submit
                     </button>
-                    {currentUser?.selectedTerm && isEditing && (
+                    {(currentUser?.selectedTerm || currentUser?.term) && isEditing && (
                       <button
                         className="RegCancel"
                         type="button"
@@ -128,7 +133,7 @@ const Registration = () => {
                     Your current term selection:
                   </p>
                   <p className="term-badge">
-                    <strong>{currentUser.selectedTerm}</strong>
+                    <strong>{currentUser.selectedTerm || currentUser.term}</strong>
                   </p>
                 </div>
 
