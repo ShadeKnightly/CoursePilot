@@ -10,7 +10,7 @@ const StudentItem = ({ id, name, program, department, onDetails }) => {
             <div className="student-info-block">
                 
                 <p className="student-name">Name: <span>{name}</span></p>
-                <p className="student-program">Program: <span>{program}</span></p>
+                <p className="student-program">Program: <span>{program || ""}</span></p>
                 <p className="student-department">Department: <span>{department}</span></p>
             </div>
 

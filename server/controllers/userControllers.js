@@ -46,7 +46,8 @@ export const userSignUpController = async (req, res) => {
         
         res.status(201).json({message: 'User created successfully'});
     } catch(error){
-        res.status(500).json({error: 'failed to register user'})
+        console.error("Sign up error:", error.message);
+        res.status(500).json({error: 'failed to register user', details: error.message})
     }
 }
 

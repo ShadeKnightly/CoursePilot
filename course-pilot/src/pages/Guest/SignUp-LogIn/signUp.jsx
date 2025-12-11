@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CardComp from "../../../components/card/cardComponent";
 import "./signUp.css"
@@ -7,6 +7,8 @@ import "./signUp.css"
 const SignUp = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState("");
+  const [programs, setPrograms] = useState([]);
+  const [programsLoading, setProgramsLoading] = useState(true);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -21,6 +23,25 @@ const SignUp = () => {
 
   const [errors, setErrors] = useState({});
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+  // Fetch programs on mount
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        setProgramsLoading(true);
+        const res = await fetch(`${API_BASE}/course/auth/programs`);
+        if (!res.ok) throw new Error("Failed to load programs");
+        const data = await res.json();
+        setPrograms(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Failed to fetch programs:", err);
+        setPrograms([]);
+      } finally {
+        setProgramsLoading(false);
+      }
+    };
+    fetchPrograms();
+  }, [API_BASE]);
 
   // handleChange
 const handleChange = (e) => {
@@ -219,13 +240,25 @@ const validateField = (name, value) => {
             <h3>Account Information</h3>
             <div className="form-row">
               <div>
-                <input
-                  className="SignUpInput"
-                  name="program"
-                  placeholder="Program"
-                  value={formData.program}
-                  onChange={handleChange}
-                />
+                {programsLoading ? (
+                  <select className="SignUpInput" disabled>
+                    <option>Loading programs...</option>
+                  </select>
+                ) : (
+                  <select
+                    className="SignUpInput"
+                    name="program"
+                    value={formData.program}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select a Program</option>
+                    {programs.map((prog) => (
+                      <option key={prog.programID} value={prog.programID}>
+                        {prog.title}
+                      </option>
+                    ))}
+                  </select>
+                )}
                 {errors.program && <span className="error-text">{errors.program}</span>}
               </div>
               <div>

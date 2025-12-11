@@ -44,8 +44,8 @@ const EditCoursePanel = ({ courseData, onSave, onCancel }) => {
         e.preventDefault();
         
         // Basic validation check
-        if (!formData.courseCode || !formData.courseName || !formData.instructor || !formData.startDate) {
-             alert("Please ensure Course Code, Name, Instructor, and Start Date are filled.");
+           if (!formData.courseCode || !formData.courseName || !formData.instructor || !formData.startDate || !formData.term || !formData.dateRange || !formData.description) {
+               alert("Please ensure Course Code, Name, Instructor, Term, Date Range, Description, and Start Date are filled.");
              return;
         }
         
@@ -70,6 +70,10 @@ const EditCoursePanel = ({ courseData, onSave, onCancel }) => {
                     <input type="text" id="courseName" name="courseName" value={formData.courseName} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
+                    <label htmlFor="term">Term</label>
+                    <input type="text" id="term" name="term" value={formData.term || ''} onChange={handleChange} required />
+                </div>
+                <div className="form-group">
                     <label htmlFor="instructor">Instructor</label>
                     <input type="text" id="instructor" name="instructor" value={formData.instructor} onChange={handleChange} required />
                 </div>
@@ -82,6 +86,10 @@ const EditCoursePanel = ({ courseData, onSave, onCancel }) => {
                 <div className="form-group">
                     <label htmlFor="time">Time</label>
                     <input type="text" id="time" name="time" value={formData.time} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="dateRange">Date Range</label>
+                    <input type="text" id="dateRange" name="dateRange" value={formData.dateRange || ''} onChange={handleChange} required />
                 </div>
                 <div className="form-group class-days-group">
                     <label>Class Days</label>
@@ -105,7 +113,7 @@ const EditCoursePanel = ({ courseData, onSave, onCancel }) => {
                 {/* --- ROW 3 & 4: Description (Full height) & Dates --- */}
                 <div className="form-group description-group">
                     <label htmlFor="description">Description</label>
-                    <textarea id="description" name="description" value={formData.description} onChange={handleChange}></textarea>
+                    <textarea id="description" name="description" value={formData.description} onChange={handleChange} required></textarea>
                 </div>
                 
                 <div className="form-group-date-column">

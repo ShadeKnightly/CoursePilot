@@ -2,27 +2,41 @@ import React, { useState, useEffect } from "react";
 import CardComp from "../../../components/card/cardComponent";
 import SearchBox from "../../../components/Search/search";
 import MessageItem from "../../../components/MessageItem/messageItem";
-import { mockMessages } from "../../../data";
 
 const MessageInbox = () => {
   const [messages, setMessages] = useState([]);
   const [filteredMessages, setFilteredMessages] = useState([]);
   const [searchField, setSearchField] = useState("");
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   // Load mock data initially
   useEffect(() => {
-    setMessages(mockMessages);
-    setFilteredMessages(mockMessages);
-  }, []);
+    const loadMessages = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/user/auth/messages`);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || `Server error: ${res.status}`);
+        }
+        const data = await res.json();
+        setMessages(data);
+        setFilteredMessages(data);
+      } catch (err) {
+        console.error("Failed to fetch messages:", err.message);
+      }
+    };
+
+    loadMessages();
+  }, [API_BASE]);
 
   // Filter messages
   useEffect(() => {
     const searchValue = searchField.toLowerCase();
     const filtered = messages.filter(
       (msg) =>
-        msg.subject.toLowerCase().includes(searchValue) ||
-        msg.name.toLowerCase().includes(searchValue) ||
-        msg.body.toLowerCase().includes(searchValue)
+        //msg.subject.toLowerCase().includes(searchValue) ||
+        //msg.name.toLowerCase().includes(searchValue) ||
+        msg.msg.toLowerCase().includes(searchValue)
     );
     setFilteredMessages(filtered);
   }, [searchField, messages]);
@@ -43,13 +57,13 @@ const MessageInbox = () => {
           {filteredMessages.length > 0 ? (
             filteredMessages.map((msg) => (
               <MessageItem
-                key={msg.id}
-                id={msg.id}
-                name={msg.name}
-                subject={msg.subject}
-                body={msg.body}
-                date={msg.date}
-                onRemove={() => handleRemove(msg.id)}
+                key={msg.messageId}
+                id={msg.messageId}
+                name={msg.name || "Unknown Sender"}
+                subject={msg.subject || "(No Subject)"}
+                body={msg.msg}
+                date={msg.createdAt}
+                onRemove={() => handleRemove(msg.messageId)}
               />
             ))
           ) : (

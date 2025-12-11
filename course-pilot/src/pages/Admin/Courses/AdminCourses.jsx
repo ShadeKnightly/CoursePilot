@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useEffect, useState } from "react";
 import ClassItem from "../../../components/ClassItem/classItem";
 import CardComp from "../../../components/card/cardComponent.jsx";
 import Search from "../../../components/Search/search.jsx";
@@ -6,43 +6,59 @@ import DeleteConfirmation from "./DeleteConfirmation.jsx";
 import EditCoursePanel from "./EditCoursePanel.jsx"; 
 import CreateCoursePanel from "./CreateCoursePanel.jsx"; 
 
-const initialCourseData = [
-    { 
-        courseCode: 'COMP101', 
-        name: 'Intro to Programming', 
-        term: 'Fall 2025', 
-        startEnd: 'Sept 1 - Dec 15', 
-        program: 'Software Development', 
-        description: '...' 
-    },
-    { 
-        courseCode: 'WEB201',
-        name: 'Web Development', 
-        term: 'Winter 2026', 
-        startEnd: 'Jan 5 - Mar 30', 
-        program: 'Software Development', 
-        description: '...' 
-    },
-    { 
-        courseCode: 'DBS301', 
-        name: 'Database Systems', 
-        term: 'Fall 2025', 
-        startEnd: 'Sept 1 - Dec 15', 
-        program: 'Software Development', 
-        description: '...', 
-    },
-];
 
 const AdminCourses = () => { 
 
+    const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
     // Course Data is now managed by state
-    const [courses, setCourses] = useState(initialCourseData); 
+    const [courses, setCourses] = useState([]); 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     
     // The rest of the list now uses the state variable
     const coursesToDisplay = courses;
 
     const [courseToDelete, setCourseToDelete] = useState(null);
     const [activePanel, setActivePanel] = useState(null); 
+
+    const normalizeId = (id) => {
+        const n = Number(id);
+        return Number.isNaN(n) ? id : n;
+    };
+
+    const dedupeCourses = (list = []) => {
+        const seen = new Set();
+        return list.filter((course) => {
+            const id = normalizeId(course.courseID || course.id);
+            if (seen.has(id)) return false;
+            seen.add(id);
+            return true;
+        });
+    };
+
+    const fetchCourses = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const res = await fetch(`${API_BASE}/course/auth/courses`);
+            if (!res.ok) {
+                throw new Error(`Failed to load courses (${res.status})`);
+            }
+            const data = await res.json();
+            const list = Array.isArray(data) ? data : [];
+            setCourses(dedupeCourses(list));
+        } catch (err) {
+            console.error("Failed to fetch courses", err);
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCourses();
+    }, [API_BASE]);
 
 
     // handlers for create/edit forms
@@ -59,26 +75,64 @@ const AdminCourses = () => {
     };
     
     //  Implementation to save an edited course
-    const handleSaveEditedCourse = (updatedCourseData) => {
-        setCourses(prevCourses => 
-            prevCourses.map(course => 
-                course.courseCode === updatedCourseData.courseCode 
-                    ? updatedCourseData // Replace the old course with the updated data
-                    : course
-            )
-        );
-        handleCancelPanel(); 
+    const handleSaveEditedCourse = async (updatedCourseData) => {
+        const id = normalizeId(updatedCourseData.courseID || updatedCourseData.id);
+        const payload = {
+            code: updatedCourseData.courseCode,
+            name: updatedCourseData.courseName || updatedCourseData.CourseName,
+            term: updatedCourseData.term,
+            dateRange: updatedCourseData.dateRange || `${updatedCourseData.startDate || ''}${updatedCourseData.endDate ? ' - ' + updatedCourseData.endDate : ''}`,
+            desc: updatedCourseData.description || updatedCourseData.c_Description || "",
+        };
+
+        try {
+            const res = await fetch(`${API_BASE}/course/auth/${id}/course`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || `Failed to update course (${res.status})`);
+            }
+
+            await fetchCourses();
+            handleCancelPanel();
+        } catch (err) {
+            console.error("Failed to update course", err);
+            setError(err.message);
+        }
     };
     
     // implementation to save a created course
-    const handleSaveNewCourse = (newCourseData) => {
-        // here we would typically make an API call
-        
-        // Simulate an API response/update by adding the new course to state
-        setCourses(prevCourses => [...prevCourses, newCourseData]);
-        
-        console.log(`[ACTION] Saved new course: ${newCourseData.courseCode}`);
-        handleCancelPanel(); 
+    const handleSaveNewCourse = async (newCourseData) => {
+        const payload = {
+            code: newCourseData.courseCode,
+            name: newCourseData.courseName,
+            term: newCourseData.term || "",
+            dateRange: newCourseData.dateRange || `${newCourseData.startDate || ''}${newCourseData.endDate ? ' - ' + newCourseData.endDate : ''}`,
+            desc: newCourseData.description || "",
+        };
+
+        try {
+            const res = await fetch(`${API_BASE}/course/auth/course`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || `Failed to create course (${res.status})`);
+            }
+
+            await fetchCourses();
+            handleCancelPanel();
+        } catch (err) {
+            console.error("Failed to create course", err);
+            setError(err.message);
+        }
     };
     
     const handleCreateCourse = () => {
@@ -89,7 +143,8 @@ const AdminCourses = () => {
     // handler for delete course data
     
     const handleDeleteCourse = (courseCode) => {
-        setCourseToDelete(courseCode);
+        const course = courses.find(c => c.courseCode === courseCode);
+        if (course) setCourseToDelete(course);
     };
 
     const handleCancelDelete = () => {
@@ -97,17 +152,27 @@ const AdminCourses = () => {
     };
 
     // confirm course deletion
-    const handleConfirmDelete = () => {
+    const handleConfirmDelete = async () => {
         if (courseToDelete) {
-            // here we would use an api call
+            const id = normalizeId(courseToDelete.courseID || courseToDelete.id);
+            try {
+                const res = await fetch(`${API_BASE}/course/auth/${id}/course`, {
+                    method: "DELETE",
+                });
 
-            // simulate the api response
-            setCourses(prevCourses => 
-                prevCourses.filter(course => course.courseCode !== courseToDelete)
-            );
-            
-            console.log(`[ACTION] Confirmed deletion of: ${courseToDelete}`);
-            setCourseToDelete(null);
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.message || `Failed to delete course (${res.status})`);
+                }
+
+                await fetchCourses();
+                console.log(`[ACTION] Confirmed deletion of: ${courseToDelete.courseCode}`);
+            } catch (err) {
+                console.error("Failed to delete course", err);
+                setError(err.message);
+            } finally {
+                setCourseToDelete(null);
+            }
         }
     }; 
 
@@ -134,17 +199,29 @@ const AdminCourses = () => {
                 headerComponent={twoSearchBar()}
                 actionButton={createButton} 
             > 
-                {/* Renders the list from the 'courses' state */}
-                {coursesToDisplay.map((course) => (
-                    <ClassItem 
-                        key={course.courseCode} 
-                        {...course}
-                        onEdit={() => handleEditCourse(course.courseCode)}
-                        onRemove={() => handleDeleteCourse(course.courseCode)} 
-                        isSignedIn={true}
-                        isAdmin={true}
-                    />
-                ))}
+                {loading ? (
+                    <p>Loading courses...</p>
+                ) : error ? (
+                    <p style={{ color: 'red' }}>Error: {error}</p>
+                ) : coursesToDisplay.length === 0 ? (
+                    <p>No courses available.</p>
+                ) : (
+                    coursesToDisplay.map((course) => (
+                        <ClassItem 
+                            key={course.courseID || course.courseCode} 
+                            courseCode={course.courseCode}
+                            name={course.CourseName || course.courseName}
+                            term={course.term}
+                            startEnd={course.dateRange}
+                            program={course.title}
+                            description={course.c_Description}
+                            onEdit={() => handleEditCourse(course.courseCode)}
+                            onRemove={() => handleDeleteCourse(course.courseCode)} 
+                            isSignedIn={true}
+                            isAdmin={true}
+                        />
+                    ))
+                )}
             </CardComp>
             
             
@@ -167,7 +244,7 @@ const AdminCourses = () => {
             
             {/* Delete Modal */}
             <DeleteConfirmation
-                courseCode={courseToDelete} 
+                courseCode={courseToDelete?.courseCode} 
                 onConfirm={handleConfirmDelete} // Uses the confirmed deletion logic
                 onCancel={handleCancelDelete}
             />
