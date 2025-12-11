@@ -34,17 +34,32 @@ const MessageInbox = () => {
     const searchValue = searchField.toLowerCase();
     const filtered = messages.filter(
       (msg) =>
-        //msg.subject.toLowerCase().includes(searchValue) ||
-        //msg.name.toLowerCase().includes(searchValue) ||
-        msg.msg.toLowerCase().includes(searchValue)
+        (msg.subject || "").toLowerCase().includes(searchValue) ||
+        (msg.userId || "").toLowerCase().includes(searchValue) ||
+        (msg.msg || "").toLowerCase().includes(searchValue)
     );
     setFilteredMessages(filtered);
   }, [searchField, messages]);
 
-  const handleRemove = (id) => {
-    const updated = messages.filter((msg) => msg.id !== id);
-    setMessages(updated);
-    setFilteredMessages(updated);
+  const handleRemove = async (messageId) => {
+    try {
+      const res = await fetch(`${API_BASE}/user/auth/messages/${messageId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Failed to delete message: ${res.status}`);
+      }
+
+      // Remove from local state after successful deletion
+      const updated = messages.filter((msg) => msg.messageId !== messageId);
+      setMessages(updated);
+      setFilteredMessages(updated);
+    } catch (err) {
+      console.error("Failed to delete message:", err);
+      alert(`Error deleting message: ${err.message}`);
+    }
   };
 
   const onSearchChange = (e) => setSearchField(e.target.value);
@@ -59,10 +74,10 @@ const MessageInbox = () => {
               <MessageItem
                 key={msg.messageId}
                 id={msg.messageId}
-                name={msg.name || "Unknown Sender"}
+                senderId={msg.userId || "Unknown Sender"}
                 subject={msg.subject || "(No Subject)"}
                 body={msg.msg}
-                date={msg.createdAt}
+                date={(msg.createdAt.split("T")[0]) || "Unknown Date"}
                 onRemove={() => handleRemove(msg.messageId)}
               />
             ))

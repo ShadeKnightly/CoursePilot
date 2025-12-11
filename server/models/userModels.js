@@ -108,3 +108,11 @@ export const getMessages = async () => {
     const result = await pool.request().query('SELECT * FROM userMessages');
     return result.recordset;
 }
+
+export const deleteMessage = async (messageId) => {
+    const pool = await poolPromise;
+
+    await pool.request()
+        .input('messageId', sql.Int, messageId)
+        .query('DELETE FROM userMessages WHERE messageId = @messageId');
+}
