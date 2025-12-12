@@ -3,76 +3,159 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 import CardComp from "../../components/card/cardComponent";
 import ClassItem from "../../components/ClassItem/classItem";
-import { mockCourses } from "../../data";
 
 const CourseCart = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
   const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState([]);
+  const [error, setError] = useState(null);
+  const [registering, setRegistering] = useState(false);
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     if (!currentUser) {
       navigate("/login");
       return;
     }
+    const fetchCartCourses = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-    const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
-    const userCourseIds = storedData[currentUser.id]?.cart || [];
-    const userCourses = mockCourses.filter((c) =>
-      userCourseIds.includes(c.id)
-    );
-    setCourses(userCourses);
-    setLoading(false);
-  }, [currentUser, navigate]);
+        const normalizeId = (id) => {
+          const n = Number(id);
+          return Number.isNaN(n) ? id : n;
+        };
+
+        const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
+
+        // Get cart items from localStorage and normalize/dedupe IDs
+        const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
+        const cartCourseIdsRaw = storedData[userId]?.cart || [];
+        const cartCourseIds = Array.from(new Set(cartCourseIdsRaw.map(normalizeId)));
+
+        if (cartCourseIds.length === 0) {
+          setCourses([]);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch all courses from backend
+        const res = await fetch(`${API_BASE}/course/auth/courses`);
+
+        if (!res.ok) {
+          throw new Error(`Error fetching courses: ${res.statusText}`);
+        }
+
+        const allCourses = await res.json();
+
+        // Dedupe courses by courseID (backend may return duplicates from JOIN)
+        const seenIds = new Set();
+        const uniqueCourses = allCourses.filter((course) => {
+          const cid = normalizeId(course.courseID);
+          if (seenIds.has(cid)) return false;
+          seenIds.add(cid);
+          return true;
+        });
+
+        // Filter to only cart courses
+        const idSet = new Set(cartCourseIds.map(normalizeId));
+        const cartCourses = uniqueCourses.filter((course) => idSet.has(normalizeId(course.courseID)));
+
+        setCourses(cartCourses || []);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchCartCourses();
+  }, [currentUser, navigate, API_BASE]);
+
 
 
   const handleRemove = (courseId) => {
+    const normalizeId = (id) => {
+      const n = Number(id);
+      return Number.isNaN(n) ? id : n;
+    };
+
+    const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
     const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
-    const updated = (storedData[currentUser.id]?.cart || []).filter(
-      (id) => id !== courseId
-    );
-    storedData[currentUser.id] = {
-      ...storedData[currentUser.id],
+    const updated = (storedData[userId]?.cart || [])
+      .map(normalizeId)
+      .filter((id) => id !== normalizeId(courseId));
+
+    storedData[userId] = {
+      ...storedData[userId],
       cart: updated,
     };
     localStorage.setItem("userCourses", JSON.stringify(storedData));
-    setCourses((prev) => prev.filter((c) => c.id !== courseId));
+
+    setCourses((prev) => prev.filter((c) => normalizeId(c.courseID) !== normalizeId(courseId)));
   };
 
-  const handleConfirmRegistration = () => {
+  const handleConfirmRegistration = async () => {
     if (courses.length === 0) {
       alert("Your cart is empty! Please add some courses first.");
       return;
     }
 
-    const userId = currentUser.id;
+    setRegistering(true);
+    const userId = currentUser.userID;
+    let successCount = 0;
+    let failedCourses = [];
 
-    // Load current localStorage data
-    const userCoursesData = JSON.parse(localStorage.getItem("userCourses")) || {};
-    const registeredData = JSON.parse(localStorage.getItem("registeredCourses")) || {};
+    try {
+      // Register each course via checkout API
+      for (const course of courses) {
+        try {
+          const res = await fetch(`${API_BASE}/user/auth/${userId}/checkout`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseId: course.courseID }),
+          });
 
-    const cartCourseIds = userCoursesData[userId]?.cart || [];
-    if (!Array.isArray(cartCourseIds)) return alert("Cart data corrupted, please try again.");
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.message || `Failed to register: ${res.status}`);
+          }
 
-    // Merge with existing registered courses (if any)
-    const existingRegistered = registeredData[userId] || [];
-    const updatedRegistered = [...new Set([...existingRegistered, ...cartCourseIds])];
+          successCount++;
+        } catch (error) {
+          console.error(`Failed to register for ${course.courseCode}:`, error);
+          failedCourses.push(`${course.courseCode} - ${error.message}`);
+        }
+      }
 
-    // Save updated registered courses
-    registeredData[userId] = updatedRegistered;
-    localStorage.setItem("registeredCourses", JSON.stringify(registeredData));
+      // Clear the cart if at least one course was registered
+      if (successCount > 0) {
+        const storedData = JSON.parse(localStorage.getItem("userCourses")) || {};
+        storedData[userId] = { cart: [] };
+        localStorage.setItem("userCourses", JSON.stringify(storedData));
+        setCourses([]);
+      }
 
-    // Clear the user's cart
-    userCoursesData[userId] = [];
-    localStorage.setItem("userCourses", JSON.stringify(userCoursesData));
-
-    // Clear state and navigate
-    setCourses([]);
-    alert("Registration confirmed! Redirecting to your courses...");
-    navigate("/courses");
+      // Show results
+      if (failedCourses.length === 0) {
+        alert(`Successfully registered for all ${successCount} courses!`);
+        navigate("/courses");
+      } else if (successCount > 0) {
+        alert(
+          `Registered for ${successCount} course(s).\n\nFailed courses:\n${failedCourses.join("\n")}`
+        );
+      } else {
+        alert(`Failed to register for any courses:\n${failedCourses.join("\n")}`);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert(`Registration failed: ${error.message}`);
+    } finally {
+      setRegistering(false);
+    }
   };
-
 
   return (
     <main style={{ padding: "2rem" }}>
@@ -92,41 +175,50 @@ const CourseCart = () => {
         >
           ← Back to Course Registration
         </button>
-        {loading ? ( <p> Loading your courses...</p> ) : 
-        courses.length === 0 ? (
-          <p>No courses in cart.</p>
+
+        {loading ? (
+          <p>Loading your courses...</p>
+        ) : error ? (
+          <p style={{ color: "red" }}>Error: {error}</p>
+        ) : courses.length === 0 ? (
+          <div>
+            <p>No courses in cart.</p>
+            <p style={{ marginTop: "1rem", color: "#666" }}>
+              Go to Course Registration to add courses to your cart.
+            </p>
+          </div>
         ) : (
           <>
             {courses.map((course) => (
               <ClassItem
-                key={course.id}
+                key={course.courseID}
                 courseCode={course.courseCode}
-                name={course.name}
+                name={course.CourseName}
                 term={course.term}
-                startEnd={course.startEnd}
-                program={course.program}
-                description={course.description}
-                onRemove={() => handleRemove(course.id)}
-                isSignedIn={!!currentUser} //convert null/undefined to false valid user object into true.
+                startEnd={course.dateRange}
+                description={course.c_Description}
+                onRemove={() => handleRemove(course.courseID)}
+                isSignedIn={!!currentUser}
               />
             ))}
-            {/*confirm Registration Button */}
+
+            {/* Confirm Registration Button */}
             <button
               onClick={handleConfirmRegistration}
+              disabled={registering}
               style={{
                 marginTop: "20px",
                 padding: "12px 24px",
-                backgroundColor: "#28a745",
+                backgroundColor: registering ? "#ccc" : "#28a745",
                 color: "white",
                 border: "none",
                 borderRadius: "8px",
-                cursor: "pointer",
+                cursor: registering ? "not-allowed" : "pointer",
                 fontWeight: "bold",
               }}
             >
-              Confirm Registration
+              {registering ? "Registering..." : "Confirm Registration"}
             </button>
-
           </>
         )}
       </CardComp>

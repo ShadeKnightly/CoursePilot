@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import CardComp from "../../../components/card/cardComponent";
 import "./contactPage.css"
+import { UserContext } from "../../../context/UserContext";
 
 const Contact = () => {
    const [status, setStatus] = useState("");
@@ -9,6 +10,9 @@ const Contact = () => {
     Subject: "",
     Message: ""
   });
+  const { currentUser } = useContext(UserContext);
+
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,23 +31,37 @@ const Contact = () => {
 
     setStatus("Sending message...");
 
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // determine user id
+    const userId = currentUser?.userId || currentUser?.id || currentUser?.ID;
+    if (!userId) {
+      setStatus("You must be signed in to send a message.");
+      return;
+    }
 
-    const messageId = Date.now(); 
+    // Compose message payload (server expects a `message` field)
+    const payload = {
+      message: JSON.stringify({ name: formData.Name, subject: formData.Subject, body: formData.Message }),
+    };
 
-    // Create message object
-    const newMessage = { ...formData, messageId };
+    try {
+      const res = await fetch(`${API_BASE}/user/auth/messages/${userId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    // Save to localStorage (you could also store multiple messages)
-    const existingMessages = JSON.parse(localStorage.getItem("messages")) || [];
-    existingMessages.push(newMessage);
-    localStorage.setItem("messages", JSON.stringify(existingMessages));
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Server error: ${res.status}`);
+      }
 
-    setStatus("Message Sent Successfully");
-    setFormData({ Name: "", Subject: "", Message: "" });
-
-    setTimeout(() => setStatus(""), 3000);
+      setStatus("Message Sent Successfully");
+      setFormData({ Name: "", Subject: "", Message: "" });
+      setTimeout(() => setStatus(""), 3000);
+    } catch (error) {
+      setStatus(`Failed to send message: ${error.message}`);
+      setTimeout(() => setStatus(""), 4000);
+    }
   };
 
 

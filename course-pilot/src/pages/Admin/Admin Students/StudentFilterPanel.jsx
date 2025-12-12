@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import "./StudentFilterPanel.css";
 // Import your styling file here (e.g., './StudentFilterPanel.css')
 
-const StudentFilterPanel = ({ onFilter, onAddStudent }) => {
+const StudentFilterPanel = ({ onFilter, programs = [] }) => {
     
     // State to hold the current values of the filter inputs
     const [filters, setFilters] = useState({
@@ -10,15 +10,6 @@ const StudentFilterPanel = ({ onFilter, onAddStudent }) => {
         id: '',
         program: '',
     });
-
-    // Placeholder data for the Program dropdown
-    const programOptions = [
-        "All Programs",
-        "Software Development",
-        "Data Analytics",
-        "IT Operations",
-        // Add more programs as needed
-    ];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -80,9 +71,10 @@ const StudentFilterPanel = ({ onFilter, onAddStudent }) => {
                         value={filters.program} 
                         onChange={handleChange}
                     >
-                        {programOptions.map(program => (
-                            <option key={program} value={program === "All Programs" ? "" : program}>
-                                {program}
+                        <option value="">All Programs</option>
+                        {programs.map((program) => (
+                            <option key={program.programID} value={program.programID}>
+                                {program.title}
                             </option>
                         ))}
                     </select>
@@ -94,12 +86,7 @@ const StudentFilterPanel = ({ onFilter, onAddStudent }) => {
                 </button>
             </div>
             
-            {/* Add New Student Button (at the bottom, based on your design) */}
-            <div className="add-student-section">
-                <button className="add-student-btn" onClick={onAddStudent}>
-                    Add New Student
-                </button>
-            </div>
+            {/* Add student disabled/hidden: creation not supported */}
         </div>
     );
 };
