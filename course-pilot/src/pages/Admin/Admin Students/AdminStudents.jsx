@@ -26,7 +26,7 @@ const AdminStudents = () => {
         const programId = s.program || s.programId || s.programID || "";
         const programTitle = lookup[Number(programId)] || null;
         return {
-            id: s.userId || s.id,
+            id: s.userID || s.userId || s.id,
             firstName,
             lastName,
             name,
@@ -87,12 +87,6 @@ const AdminStudents = () => {
     
     // --- Panel Handlers ---
 
-    // Handler to open the student details panel in VIEW mode
-    const handleViewStudentDetails = (studentId) => {
-        const student = students.find(s => s.id === studentId);
-        setActiveStudent(student || null);
-    };
-
     // Handler to close any active panel (used by the panel's "Close" button)
     const handleClosePanel = () => {
         setActiveStudent(null);
@@ -119,7 +113,6 @@ const AdminStudents = () => {
     };
 
 
-    const listHeader = () => <h3 className="card-header-title">Students</h3>;
 
 
     return (
@@ -127,7 +120,6 @@ const AdminStudents = () => {
             {/* The main list */}
             <CardComp 
                 title='Students' 
-                headerComponent={listHeader()}
             >
 
                 {loading ? (
@@ -139,10 +131,11 @@ const AdminStudents = () => {
                 ) : (
                     filteredStudents.map((student) => (
                         <StudentItem 
-                            key={student.id} 
-                            {...student}
+                            key={student.id}
+                            userId={student.id}
+                            name={student.name}
+                            department={student.department}
                             program={student.programTitle || student.programId || student.program}
-                            onDetails={() => handleViewStudentDetails(student.id)} 
                         />
                     ))
                 )}

@@ -29,7 +29,7 @@ const EditCoursePanel = ({ courseData, onSave, onCancel }) => {
         
         // Basic validation check
            if (!formData.courseCode || !formData.CourseName || !formData.term || !formData.dateRange || !formData.c_Description) {
-               alert("Please ensure Course Code, Name, Instructor, Term, Date Range, Description, and Start Date are filled.");
+               alert("Please ensure Course Code, Name, Term, Date Range, and Description are filled.");
              return;
         }
         

@@ -109,10 +109,10 @@ const AdminCourses = () => {
     const handleSaveNewCourse = async (newCourseData) => {
         const payload = {
             code: newCourseData.courseCode,
-            name: newCourseData.courseName,
+            name: newCourseData.CourseName,
             term: newCourseData.term || "",
             dateRange: newCourseData.dateRange || `${newCourseData.startDate || ''}${newCourseData.endDate ? ' - ' + newCourseData.endDate : ''}`,
-            desc: newCourseData.description || "",
+            desc: newCourseData.c_Description || "",
         };
 
         try {
@@ -124,7 +124,7 @@ const AdminCourses = () => {
 
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
-                throw new Error(err.message || `Failed to create course (${res.status})`);
+                throw new Error(err.message || `Failed to create course, reason: (${res.status})`);
             }
 
             await fetchCourses();
