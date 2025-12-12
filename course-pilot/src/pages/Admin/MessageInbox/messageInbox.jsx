@@ -35,7 +35,7 @@ const MessageInbox = () => {
     const filtered = messages.filter(
       (msg) =>
         (msg.subject || "").toLowerCase().includes(searchValue) ||
-        (msg.userId || "").toLowerCase().includes(searchValue) ||
+        String(msg.userId || "").includes(searchValue) ||
         (msg.msg || "").toLowerCase().includes(searchValue)
     );
     setFilteredMessages(filtered);

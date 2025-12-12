@@ -72,27 +72,27 @@ const Profile = () => {
 
 
 // likely to be removed
-  const handleResetPassword = () => {
-  const newPassword = prompt("Enter your new password:");
-  if (!newPassword || newPassword.trim().length < 6) {
-    alert("Password must be at least 6 characters long.");
-    return;
-  }
+//   const handleResetPassword = () => {
+//   const newPassword = prompt("Enter your new password:");
+//   if (!newPassword || newPassword.trim().length < 6) {
+//     alert("Password must be at least 6 characters long.");
+//     return;
+//   }
 
-  const updatedUser = { ...user, password: newPassword };
+//   const updatedUser = { ...user, password: newPassword };
 
-  // Update in users list (localStorage)
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-  const updatedUsers = users.map((u) =>
-    u.username === user.username ? updatedUser : u
-  );
-  localStorage.setItem("users", JSON.stringify(updatedUsers));
+//   // Update in users list (localStorage)
+//   const users = JSON.parse(localStorage.getItem("users")) || [];
+//   const updatedUsers = users.map((u) =>
+//     u.username === user.username ? updatedUser : u
+//   );
+//   localStorage.setItem("users", JSON.stringify(updatedUsers));
 
-  // Update currentUser in context
-  setCurrentUser(updatedUser);
+//   // Update currentUser in context
+//   setCurrentUser(updatedUser);
 
-  alert("Password reset successfully!");
-};
+//   alert("Password reset successfully!");
+// };
 
   if (!user) return <p>Loading profile...</p>;
   return (
@@ -123,7 +123,7 @@ const Profile = () => {
             Edit Profile
           </button>
 
-          <button
+          {/* <button
             onClick={handleResetPassword}
             className="reset-btn"
             style={{
@@ -136,7 +136,7 @@ const Profile = () => {
             }}
           >
             Reset Password
-          </button>
+          </button> */}
         </div>
       </CardComp>
     </main>
