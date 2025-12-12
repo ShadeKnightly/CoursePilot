@@ -2,7 +2,7 @@
 import React from "react";
 import "./messageItem.css";
 
-function MessageItem({ senderName, subject, body, date, onRemove }) {
+function MessageItem({ senderId, subject, body, date, onRemove }) {
   return (
     <div className="class-card">
       <div className="course-code">
@@ -11,7 +11,7 @@ function MessageItem({ senderName, subject, body, date, onRemove }) {
 
       <div className="course-details">
         <div className="info">
-          <p><strong>From:</strong> {senderName}</p>
+          <p><strong>From (user ID):</strong> {senderId}</p>
           <p><strong>Date:</strong> {date}</p>
         </div>
         <div className="description">

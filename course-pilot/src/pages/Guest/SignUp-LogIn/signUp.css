@@ -83,3 +83,10 @@
   color: var(--color-accent, #00c6ff);
   margin-top: .5rem;
 }
+
+.error-text {
+  color: red;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+  display: block;
+}

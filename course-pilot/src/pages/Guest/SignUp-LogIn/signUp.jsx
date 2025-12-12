@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CardComp from "../../../components/card/cardComponent";
 import "./signUp.css"
@@ -7,6 +7,8 @@ import "./signUp.css"
 const SignUp = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState("");
+  const [programs, setPrograms] = useState([]);
+  const [programsLoading, setProgramsLoading] = useState(true);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,87 +21,287 @@ const SignUp = () => {
     password: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [errors, setErrors] = useState({});
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-  const handleSubmit = async (e) => {
+  // Fetch programs on mount
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        setProgramsLoading(true);
+        const res = await fetch(`${API_BASE}/course/auth/programs`);
+        if (!res.ok) throw new Error("Failed to load programs");
+        const data = await res.json();
+        setPrograms(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Failed to fetch programs:", err);
+        setPrograms([]);
+      } finally {
+        setProgramsLoading(false);
+      }
+    };
+    fetchPrograms();
+  }, [API_BASE]);
+
+  // handleChange
+const handleChange = (e) => {
+  const { name, value } = e.target;
+
+  // Prevent typing more than 10 digits for phone
+  if (name === "phone") {
+    if (!/^\d*$/.test(value)) return;  // Only digits allowed
+    if (value.length > 10) return;     // Max 10 digits
+  }
+
+  setFormData((prev) => ({ ...prev, [name]: value }));
+
+  // Run validation only for non-phone fields immediately
+  if (name !== "phone") {
+    setErrors((prev) => ({ ...prev, [name]: validateField(name, value) }));
+  }
+};
+
+// Validate phone on blur
+const handleBlur = (e) => {
+  const { name, value } = e.target;
+  if (name === "phone") {
+    setErrors((prev) => ({ ...prev, phone: validateField(name, value) }));
+  }
+};
+
+// Validation functions
+const validateField = (name, value) => {
+
+  const trimmed = value.trim(); // remove leading/trailing spaces
+
+  switch (name) {
+    case "firstName":
+    case "lastName":
+      if (!value) return "Required";
+      if (!/^[a-zA-Z'-]+$/.test(value)) 
+        return "Name can only contain letters, apostrophes, or hyphens";
+      break;
+    case "email":
+      if (!value) return "Required";
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Invalid email format";
+      break;
+    case "phone":
+      if (!value) return "Required";
+      if (value.length !== 10) return "Phone must be 10 digits";
+      break;
+    case "username":
+      if (!value) return "Required";
+      if (/\s/.test(value)) return "Username cannot contain spaces";
+      break;
+    case "password":
+      if (!value) return "Required"; // check original value
+      if (/\s/.test(value)) return "Password cannot contain spaces"; // reject any spaces
+      if (value.length < 6) return "Password must be at least 6 characters";
+      break;
+    case "program":
+      if (!value) return "Required";
+      break;
+    case "birthday":
+      if (!value) return "Required";
+      break;
+    default:
+      return "";
+  }
+  return "";
+};
+
+
+ const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if all fields are filled
-    for (const key in formData) {
-      if (!formData[key]) {
-        setStatus("Please fill all fields.");
-        return;
-      }
+ // Run all validations before submission
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      const error = validateField(key, formData[key]);
+      if (error) newErrors[key] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
 
     setStatus("Creating account...");
 
-    // Simulate delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const payload = {
+        firstname: formData.firstName,
+        lastname: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        birthday: formData.birthday,
+        department: formData.department,
+        program: formData.program,
+        username: formData.username,
+        password: formData.password,
+      };
 
-    // Generate unique student ID
-    const studentId = "S" + Math.floor(Math.random() * 1000000).toString();
+      const res = await fetch(`${API_BASE}/user/auth/signUp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    // Create user object
-    const newUser = { ...formData, id: Date.now, studentId, role: "student" };
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || err.error || `Server error: ${res.status}`);
+      }
 
-    // Save to localStorage (you could also store multiple users)
-    const existingUsers = JSON.parse(localStorage.getItem("users")) || [];
-
-    existingUsers.push(newUser);
-
-    localStorage.setItem("users", JSON.stringify(existingUsers));
-
-    setStatus("Sign Up successful! Redirecting...");
-
-    setTimeout(() => {
-      navigate("/login");
-    }, 1500);
+      //const data = await res.json();
+      setStatus("Sign up successful! Redirecting to login...");
+      
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      setStatus(`Sign up failed: ${error.message}`);
+      setTimeout(() => setStatus(""), 4000);
+    }
   };
 
-  return (
+
+   return (
     <main className="signup-page">
       <CardComp title="Sign Up">
         <form onSubmit={handleSubmit} className="signup-form">
           <div className="form-section">
             <h3>Personal</h3>
             <div className="form-row">
-              <input className="SignUpInput" name="firstName" placeholder="First Name" value={formData.firstName} onChange={handleChange} />
-              <input className="SignUpInput" name="lastName" placeholder="Last Name" value={formData.lastName} onChange={handleChange} />
+              <div>
+                <input
+                  className="SignUpInput"
+                  name="firstName"
+                  placeholder="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                />
+                {errors.firstName && <span className="error-text">{errors.firstName}</span>}
+              </div>
+              <div>
+                <input
+                  className="SignUpInput"
+                  name="lastName"
+                  placeholder="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                />
+                {errors.lastName && <span className="error-text">{errors.lastName}</span>}
+              </div>
             </div>
             <div className="form-row">
-              <input className="SignUpInput" type="date" name="birthday" placeholder="Date of Birth" value={formData.birthday} onChange={handleChange} />
+              <div>
+                <input
+                  className="SignUpInput"
+                  type="date"
+                  name="birthday"
+                  placeholder="Date of Birth"
+                  value={formData.birthday}
+                  onChange={handleChange}
+                />
+                {errors.birthday && <span className="error-text">{errors.birthday}</span>}
+              </div>
             </div>
           </div>
 
           <div className="form-section">
             <h3>Contact Information</h3>
             <div className="form-row">
-              <input className="SignUpInput" name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
-              <input className="SignUpInput" name="phone" placeholder="Phone" value={formData.phone} onChange={handleChange} />
+              <div>
+                <input
+                  className="SignUpInput"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+                {errors.email && <span className="error-text">{errors.email}</span>}
+              </div>
+              <div>
+                <input
+                    className="SignUpInput"
+                    name="phone"
+                    placeholder="Phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                  {errors.phone && <span className="error-text">{errors.phone}</span>}
+
+              </div>
             </div>
           </div>
 
           <div className="form-section">
             <h3>Account Information</h3>
             <div className="form-row">
-              <input className="SignUpInput" name="program" placeholder="Program" value={formData.program} onChange={handleChange} />
-              <select className="signUpDepartSelect" name="department" value={formData.department} onChange={handleChange} disabled>
-                <option value="Software Development">Department</option>
-              </select>
+              <div>
+                {programsLoading ? (
+                  <select className="SignUpInput" disabled>
+                    <option>Loading programs...</option>
+                  </select>
+                ) : (
+                  <select
+                    className="SignUpInput"
+                    name="program"
+                    value={formData.program}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select a Program</option>
+                    {programs.map((prog) => (
+                      <option key={prog.programID} value={prog.programID}>
+                        {prog.title}
+                      </option>
+                    ))}
+                  </select>
+                )}
+                {errors.program && <span className="error-text">{errors.program}</span>}
+              </div>
+              <div>
+                <select
+                  className="signUpDepartSelect"
+                  name="department"
+                  value={formData.department}
+                  disabled
+                >
+                  <option value="Software Development">Department</option>
+                </select>
+              </div>
             </div>
             <div className="form-row">
-              <input className="SignUpInput" name="username" placeholder="Username" value={formData.username} onChange={handleChange} />
-              <input className="SignUpInput" type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} />
+              <div>
+                <input
+                  className="SignUpInput"
+                  name="username"
+                  placeholder="Username"
+                  value={formData.username}
+                  onChange={handleChange}
+                />
+                {errors.username && <span className="error-text">{errors.username}</span>}
+              </div>
+              <div>
+                <input
+                  className="SignUpInput"
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                {errors.password && <span className="error-text">{errors.password}</span>}
+              </div>
             </div>
           </div>
 
           <div className="form-actions">
-            <button className="submit" type="submit">Submit</button>
+            <button className="submit" type="submit" disabled={status === "Creating account..."}>
+              {status === "Creating account..." ? "Submitting..." : "Submit"}
+            </button>
           </div>
-
           {status && <p className="status">{status}</p>}
         </form>
       </CardComp>

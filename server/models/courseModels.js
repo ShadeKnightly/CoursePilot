@@ -3,7 +3,7 @@ import sql from 'mssql';
 
 export const getAllCourses = async () => {
     const pool = await poolPromise;
-    const result = await pool.request().query("SELECT * FROM Courses");
+    const result = await pool.request().query("SELECT c.courseID, c.courseCode, c.CourseName, c.term, c.dateRange, p.title, c.c_Description, p.programID FROM Courses c JOIN CourseList cl ON c.courseID = cl.courseID JOIN Programs p ON p.programID = cl.programID;");
 
     return result.recordset;
 }
