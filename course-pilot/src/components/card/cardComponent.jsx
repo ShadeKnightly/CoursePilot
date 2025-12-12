@@ -3,16 +3,33 @@ import { FaSearch, FaShoppingCart } from "react-icons/fa";
 import "./cardComp.css";
 import { Link, useLocation } from "react-router-dom";
 
-const CardComp = ({ title, children }) => {
+const CardComp = ({ title, children, actionButton }) => {
   const location = useLocation();
+
+  console.log("PATH IS:", location.pathname);
+
 
   // Only show icons on the Course Registration page
   const showIcons = location.pathname === "/courseSelect";
 
+  // path from the admin course page
+  const isAdminCoursesPage = location.pathname === "/AdminCourses";
+
+  const addCreateButton = () => {
+    if (!isAdminCoursesPage) return null;
+    return actionButton;
+  };
+
   return (
     <div className="card">
       <div className="card-header">
+        
         <h2 className="card-title">{title}</h2>
+
+         {/* create course button on admin/courses */}
+        {addCreateButton()}
+
+        {/* Only show on courseSelect */}
         {showIcons && (
           <div className="card-icons">
             <Link to="/search" className="icon-button">
@@ -27,6 +44,9 @@ const CardComp = ({ title, children }) => {
       <div className="card-body">{children}</div>
     </div>
   );
+
+
+
 };
 
 export default CardComp;
