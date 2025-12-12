@@ -6,9 +6,6 @@ import { Link, useLocation } from "react-router-dom";
 const CardComp = ({ title, children, actionButton }) => {
   const location = useLocation();
 
-  console.log("PATH IS:", location.pathname);
-
-
   // Only show icons on the Course Registration page
   const showIcons = location.pathname === "/courseSelect";
 
