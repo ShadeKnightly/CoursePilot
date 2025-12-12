@@ -12,6 +12,7 @@ const Contact = () => {
   });
   const { currentUser } = useContext(UserContext);
 
+
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
   const handleChange = (e) => {
@@ -32,7 +33,7 @@ const Contact = () => {
     setStatus("Sending message...");
 
     // determine user id
-    const userId = currentUser?.userId || currentUser?.id || currentUser?.ID;
+    const userId = currentUser?.userID;
     if (!userId) {
       setStatus("You must be signed in to send a message.");
       return;
