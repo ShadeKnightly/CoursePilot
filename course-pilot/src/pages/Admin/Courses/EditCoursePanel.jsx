@@ -50,8 +50,8 @@ const EditCoursePanel = ({ courseData, onSave, onCancel }) => {
                     <input type="text" id="courseCode" name="courseCode" value={formData.courseCode} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="courseName">Course Name</label>
-                    <input type="text" id="courseName" name="courseName" value={formData.CourseName} onChange={handleChange} required />
+                    <label htmlFor="CourseName">Course Name</label>
+                    <input type="text" id="CourseName" name="CourseName" value={formData.CourseName} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
                     <label htmlFor="term">Term</label>
@@ -66,8 +66,8 @@ const EditCoursePanel = ({ courseData, onSave, onCancel }) => {
 
                 {/* --- ROW 3 & 4: Description (Full height) & Dates --- */}
                 <div className="form-group description-group">
-                    <label htmlFor="description">Description</label>
-                    <textarea id="description" name="description" value={formData.c_Description} onChange={handleChange} required></textarea>
+                    <label htmlFor="c_Description">Description</label>
+                    <textarea id="c_Description" name="c_Description" value={formData.c_Description} onChange={handleChange} required></textarea>
                 </div>
                 
                 {/* --- ACTIONS --- */}

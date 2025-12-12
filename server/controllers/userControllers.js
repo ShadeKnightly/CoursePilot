@@ -65,15 +65,29 @@ export const getStudentCoursesController = async (req, res) => {
 export const registerUserToTermController = async (req, res) => {
     try{
         const { id } = req.params;
-        const { term } = req.body;
+        const { term, unregisterPrevious } = req.body;
 
         if(!term)
             return res.status(400).json({message: 'Valid Term required' });
 
+        // If requested, unregister all existing courses before switching term
+        if (unregisterPrevious) {
+            await userModel.unregisterAllCourses(id);
+        }
         await userModel.registerUserTerm(id, term);
         res.status(200).json({message: 'user term updated'});
     }catch(error){
         res.status(500).json({message: error.message});
+    }
+}
+
+export const bulkUnregisterController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await userModel.unregisterAllCourses(id);
+        res.status(200).json({ message: 'All courses successfully unregistered' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }
 

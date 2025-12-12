@@ -28,6 +28,20 @@ const Registration = () => {
       return;
     }
 
+    // If switching term, warn the user that current courses will be unregistered
+    const existingTerm = currentUser?.selectedTerm || currentUser?.term || "";
+    const isSwitchingTerm = existingTerm && term && existingTerm !== term;
+    if (isSwitchingTerm) {
+      const confirmed = window.confirm(
+        "Switching terms will unregister all courses from your current term. Do you want to continue?"
+      );
+      if (!confirmed) {
+        setStatus("Term change cancelled.");
+        setTimeout(() => setStatus(""), 2500);
+        return;
+      }
+    }
+
     setStatus("Saving your term selection...");
     try {
       const userId = currentUser?.userId || currentUser?.userID || currentUser?.id;
@@ -35,7 +49,9 @@ const Registration = () => {
         throw new Error("Missing user ID; please sign in again.");
       }
       const payload = {
-        term: term
+        term: term,
+        // Hint to backend to unregister previous term courses if term is changing
+        unregisterPrevious: Boolean(isSwitchingTerm)
       };
       const res = await fetch(`${API_BASE}/user/auth/${userId}/registration`, {
         method: "PATCH",
@@ -48,7 +64,11 @@ const Registration = () => {
         throw new Error(err.message || `Server error: ${res.status}`);
       }
 
-      setStatus("Term selection saved successfully!");
+      setStatus(
+        isSwitchingTerm
+          ? "Term changed and previous courses unregistered."
+          : "Term selection saved successfully!"
+      );
 
       // Update current user in context and localStorage
       const updatedUser = { ...currentUser, selectedTerm: term, term };
