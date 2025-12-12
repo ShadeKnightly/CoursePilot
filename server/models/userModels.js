@@ -91,6 +91,14 @@ export const unregisterFromCourse = async (id, courseId) =>{
         .query('DELETE FROM Studying WHERE userId = @id AND courseId = @courseId');
 }
 
+export const unregisterAllCourses = async (id) => {
+    const pool = await poolPromise;
+
+    await pool.request()
+        .input('id', sql.Int, id)
+        .query('DELETE FROM Studying WHERE userId = @id');
+}
+
 export const sendMessage = async (id, message) =>{
     const pool = await poolPromise;
     const currentDate = new Date();

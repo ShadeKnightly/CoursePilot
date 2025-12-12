@@ -1,5 +1,5 @@
 import express from 'express';
-import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, sendMessageController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController, viewMessagesController, deleteMessageController } from '../controllers/userControllers.js';
+import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, sendMessageController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController, viewMessagesController, deleteMessageController, bulkUnregisterController } from '../controllers/userControllers.js';
 
 
 const router = express.Router();
@@ -26,6 +26,9 @@ router.patch('/:id/profile', updateUserProfileController);
 
 // user delete course(unregister)
 router.delete('/:id/unregister', userUnregisterController);
+
+// user bulk delete courses (unregister all)
+router.delete('/:id/registrations', bulkUnregisterController);
 
 // user send message
 router.post('/messages/:id', sendMessageController);
