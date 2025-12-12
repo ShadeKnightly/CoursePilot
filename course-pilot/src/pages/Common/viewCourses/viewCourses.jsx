@@ -5,6 +5,22 @@ import SearchBox from "../../../components/Search/search";
 import "../../Student/courseSearch/courseSearch.css";
 
 
+const normalizeId = (id) => {
+  const n = Number(id);
+  return Number.isNaN(n) ? id : n;
+};
+
+const dedupeCourses = (list = []) => {
+  const seen = new Set();
+  return list.filter((course) => {
+    const id = normalizeId(course.courseID || course.id || course.courseCode);
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+};
+
+
 
 const ViewCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -13,6 +29,7 @@ const ViewCourses = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 
 
   // Fetch all courses once
@@ -38,8 +55,9 @@ const ViewCourses = () => {
       }
     };
     fetchAllCourses().then((data) => {
-      setCourses(data);
-      setFilteredCourses(data);
+      const deduped = dedupeCourses(data);
+      setCourses(deduped);
+      setFilteredCourses(deduped);
     });
   }, [API_BASE]);
 
@@ -54,7 +72,7 @@ const ViewCourses = () => {
       Object.values(course).join(" ").toLowerCase().includes(searchValue)
     );
     
-    setFilteredCourses(filtered);
+    setFilteredCourses(dedupeCourses(filtered));
   }, [courses, searchField]);
 
   // handlers
@@ -62,7 +80,7 @@ const ViewCourses = () => {
 
   const handleRemove = (courseId) => {
     console.log(`Removed course with ID: ${courseId}`);
-    setCourses((prev) => prev.filter((course) => course.id !== courseId));
+    setCourses((prev) => prev.filter((course) => normalizeId(course.courseID || course.id) !== normalizeId(courseId)));
   };
 
   return (
@@ -79,7 +97,7 @@ const ViewCourses = () => {
             {filteredCourses.length > 0 ? (
               filteredCourses.map((course) => (
                 <ClassItem
-                  key={course.courseID}
+                  key={course.courseID || course.id || course.courseCode}
                   courseCode={course.courseCode}
                   name={course.CourseName}
                   term={course.term}

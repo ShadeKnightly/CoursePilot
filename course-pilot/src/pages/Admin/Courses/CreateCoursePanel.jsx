@@ -4,19 +4,10 @@ import React, { useState } from 'react';
 // Define all fields shown in the layout image
 const initialEmptyCourse = {
     courseCode: '',
-    courseName: '',
+    CourseName: '',
     term: '',
     dateRange: '',
-    instructor: '',
-    room: '',
-    time: '',
-    description: '',
-    startDate: '',
-    endDate: '',
-    registrationOpenDate: '',
-    registrationCloseDate: '',
-    // Use an array or string for days, defaulting to empty/none selected
-    classDays: [], 
+    c_Description: '',
 };
 
 const CreateCoursePanel = ({ onSave, onCancel }) => {
@@ -30,30 +21,14 @@ const CreateCoursePanel = ({ onSave, onCancel }) => {
             [name]: value,
         }));
     };
-    
-    const handleDayChange = (e) => {
-        const { value, checked } = e.target;
-        
-        setFormData(prevData => {
-            const currentDays = prevData.classDays;
-            
-            if (checked) {
-                // Add the day if checked
-                return { ...prevData, classDays: [...currentDays, value] };
-            } else {
-                // Remove the day if unchecked
-                return { ...prevData, classDays: currentDays.filter(day => day !== value) };
-            }
-        });
-    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         
         // Basic validation check (ensure required fields are present)
-           if (!formData.courseCode || !formData.courseName || !formData.instructor || !formData.startDate || !formData.term || !formData.dateRange || !formData.description) {
-               alert("Please fill in Course Code, Name, Instructor, Term, Date Range, Description, and Start Date.");
-             return;
+        if (!formData.courseCode || !formData.CourseName || !formData.term || !formData.dateRange || !formData.c_Description) {
+            alert("Please fill in Course Code, Name, Term, Date Range, and Description.");
+            return;
         }
         
         // Call the onSave handler from AdminCourses with the new data
@@ -71,72 +46,26 @@ const CreateCoursePanel = ({ onSave, onCancel }) => {
                     <input type="text" id="courseCode" name="courseCode" value={formData.courseCode} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="courseName">Course Name</label>
-                    <input type="text" id="courseName" name="courseName" value={formData.courseName} onChange={handleChange} required />
+                    <label htmlFor="CourseName">Course Name</label>
+                    <input type="text" id="CourseName" name="CourseName" value={formData.CourseName} onChange={handleChange} required />
                 </div>
                 <div className="form-group">
                     <label htmlFor="term">Term</label>
                     <input type="text" id="term" name="term" value={formData.term} onChange={handleChange} required />
                 </div>
-                <div className="form-group">
-                    <label htmlFor="instructor">Instructor</label>
-                    <input type="text" id="instructor" name="instructor" value={formData.instructor} onChange={handleChange} required />
-                </div>
 
                 {/* --- ROW 2 --- */}
-                <div className="form-group">
-                    <label htmlFor="room">Room</label>
-                    <input type="text" id="room" name="room" value={formData.room} onChange={handleChange} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="time">Time</label>
-                    <input type="text" id="time" name="time" value={formData.time} onChange={handleChange} />
-                </div>
+
                 <div className="form-group">
                     <label htmlFor="dateRange">Date Range</label>
                     <input type="text" id="dateRange" name="dateRange" value={formData.dateRange} onChange={handleChange} required />
                 </div>
-                <div className="form-group class-days-group">
-                    <label>Class Days</label>
-                    <div className="day-options">
-                        {['M', 'T', 'W', 'TH', 'F'].map(day => (
-                            <label key={day} className="day-checkbox">
-                                <input 
-                                    type="checkbox" 
-                                    name="classDays" 
-                                    value={day} 
-                                    checked={formData.classDays.includes(day)}
-                                    onChange={handleDayChange}
-                                />
-                                <span className="custom-radio">{day}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
+
 
                 {/* --- ROW 3 & 4: Description (Full height) & Dates --- */}
                 <div className="form-group description-group">
-                    <label htmlFor="description">Description</label>
-                    <textarea id="description" name="description" value={formData.description} onChange={handleChange} required></textarea>
-                </div>
-                
-                <div className="form-group-date-column">
-                    <div className="form-group">
-                        <label htmlFor="startDate">Start Date</label>
-                        <input type="date" id="startDate" name="startDate" value={formData.startDate} onChange={handleChange} required />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="endDate">End Date</label>
-                        <input type="date" id="endDate" name="endDate" value={formData.endDate} onChange={handleChange} />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="registrationOpenDate">Registration Open Date</label>
-                        <input type="date" id="registrationOpenDate" name="registrationOpenDate" value={formData.registrationOpenDate} onChange={handleChange} />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="registrationCloseDate">Registration Close Date</label>
-                        <input type="date" id="registrationCloseDate" name="registrationCloseDate" value={formData.registrationCloseDate} onChange={handleChange} />
-                    </div>
+                    <label htmlFor="c_Description">Description</label>
+                    <textarea id="c_Description" name="c_Description" value={formData.c_Description} onChange={handleChange} required></textarea>
                 </div>
                 
                 {/* --- ACTIONS --- */}
