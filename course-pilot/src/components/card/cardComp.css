@@ -81,3 +81,12 @@ border: 1px solid #05A4FC;
   background: rgba(255, 255, 255, 0.4);
 }
 
+.create-btn {
+  background-color: #8c52ff;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
