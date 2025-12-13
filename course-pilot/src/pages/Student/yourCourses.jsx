@@ -25,7 +25,9 @@ const UserCourses = () => {
           throw new Error("User not logged in");
         }
 
-        const res = await fetch(`${API_BASE}/user/auth/${currentUser.userID}/courses`);
+        const res = await fetch(`${API_BASE}/user/auth/${currentUser.userID}/courses`, {
+          credentials: "include"
+        });
 
         if (!res.ok) {
           throw new Error(`Error fetching courses: ${res.statusText}`);
@@ -68,6 +70,7 @@ const UserCourses = () => {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ courseId: courseId }),
+        credentials: "include"
       });
 
       if (!res.ok) {

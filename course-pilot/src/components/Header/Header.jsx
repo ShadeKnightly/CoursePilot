@@ -9,13 +9,24 @@ function Header() {
   const {currentUser, setCurrentUser} = useContext(UserContext);
 
 
-const handleSignOut = () => {
-  localStorage.removeItem("currentUser");
-  localStorage.removeItem("messages"); // temp inbox clear for testing, so mock data restores after logout - delete when working with real database
-  setCurrentUser(null);
-  setTimeout(() => {
-    navigate("/viewPrograms");
-  }, 0);
+const handleSignOut = async () => {
+  try {
+    const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    
+    // Call logout endpoint to clear server-side cookie
+    await fetch(`${API_BASE}/user/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+  } finally {
+    // Clear client-side state regardless of API call result
+    setCurrentUser(null);
+    setTimeout(() => {
+      navigate("/viewPrograms");
+    }, 0);
+  }
 };
 
 

@@ -4,7 +4,7 @@ import sql from "mssql";
 export async function getAllStudents() {
     try{
         const pool = await poolPromise;
-        const result = await pool.request().query("SELECT * FROM Users WHERE role = 'student'");
+        const result = await pool.request().query("SELECT userID, firstName, lastName, department, program, term FROM Users WHERE role = 'student'");
 
         return result.recordset;
     }catch(error){
@@ -16,6 +16,17 @@ export async function findUserByUsername(username){
     try{
         const pool = await poolPromise;
         const result = await pool.request().input("username", sql.NVarChar, username).query("SELECT * FROM Users WHERE username = @username");
+        
+        return result.recordset[0];
+    }catch(error){
+        throw new Error("Failed to find user: " + error.message);
+    }
+}
+
+export async function findUserById(id){
+    try{
+        const pool = await poolPromise;
+        const result = await pool.request().input("id", sql.Int, id).query("SELECT * FROM Users WHERE userID = @id");
         
         return result.recordset[0];
     }catch(error){

@@ -67,7 +67,9 @@ const CourseSelection = () => {
 
     const fetchRegisteredCourses = async () => {
       try {
-        const res = await fetch(`${API_BASE}/user/auth/${userId}/courses`);
+        const res = await fetch(`${API_BASE}/user/auth/${userId}/courses`, {
+          credentials: "include"
+        });
         if (!res.ok) throw new Error(`Error fetching registered courses: ${res.statusText}`);
         const data = await res.json();
         return Array.isArray(data) ? data : [];

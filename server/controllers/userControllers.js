@@ -11,27 +11,51 @@ export const getStudentsController = async (req, res) =>{
     }
 };
 
+export const getCurrentUserController = async (req, res) => {
+  try {
+    const userId = req.user.sub; // from JWT middleware
+    const user = await userModel.findUserById(userId);
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const { password, ...safeUser } = user;
+    res.json(safeUser);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 export const userSignInController = async (req, res) => {
     try{
         const { username, password } = req.body
         const user = await userModel.findUserByUsername(username);
 
         //run bcrypt verification
-        if (!user || !bcrypt.compareSync(password, user.password)) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
         //jwt token gen
         const token = generateToken(user);
 
         //set token to cookie
-        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+        res.cookie('token', token, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict', maxAge: 1000 * 60 * 60 });
         const { password: userPassword, ...safeUser} = user;
 
-        res.status(200).json(safeUser);
+        res.status(200).json({ success: true, user: safeUser });
     } catch(error){
         res.status(500).json({message: error.message});
     }
-} 
+}
+
+export const logoutController = async (req, res) => {
+    try{
+        res.clearCookie('token', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+        res.status(200).json({ message: 'Logged out successfully' });
+    } catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
 
 export const userSignUpController = async (req, res) => {
     try{
@@ -54,6 +78,11 @@ export const userSignUpController = async (req, res) => {
 export const getStudentCoursesController = async (req, res) => {
     try{
         const { id } = req.params;
+        
+        if (req.user.sub !== Number(id) && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+
         const courses = await userModel.getAllStudentCourses(id);
 
         res.status(200).json(courses);
@@ -65,6 +94,11 @@ export const getStudentCoursesController = async (req, res) => {
 export const registerUserToTermController = async (req, res) => {
     try{
         const { id } = req.params;
+        
+        if (req.user.sub !== Number(id) && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        
         const { term, unregisterPrevious } = req.body;
 
         if(!term)
@@ -84,6 +118,11 @@ export const registerUserToTermController = async (req, res) => {
 export const bulkUnregisterController = async (req, res) => {
     try {
         const { id } = req.params;
+        
+        if (req.user.sub !== Number(id) && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        
         await userModel.unregisterAllCourses(id);
         res.status(200).json({ message: 'All courses successfully unregistered' });
     } catch (error) {
@@ -94,6 +133,11 @@ export const bulkUnregisterController = async (req, res) => {
 export const checkoutCourseController = async (req, res) => {
     try{
         const {id} = req.params;
+        
+        if (req.user.sub !== Number(id) && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        
         const {courseId} = req.body;
 
         if(!courseId)
@@ -108,6 +152,11 @@ export const checkoutCourseController = async (req, res) => {
 export const updateUserProfileController = async (req, res) => {
     try{
         const { id } = req.params;
+        
+        if (req.user.sub !== Number(id) && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        
         const { phone, email } = req.body
 
         if(!phone)
@@ -125,6 +174,11 @@ export const updateUserProfileController = async (req, res) => {
 export const userUnregisterController = async (req, res) => {
     try{
         const { id } = req.params;
+        
+        if (req.user.sub !== Number(id) && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        
         const { courseId } = req.body;
 
          if(!courseId || isNaN(courseId))
@@ -140,6 +194,11 @@ export const userUnregisterController = async (req, res) => {
 export const sendMessageController = async (req, res) =>{
     try{
         const { id } = req.params;
+        
+        if (req.user.sub !== Number(id) && req.user.role !== "admin") {
+            return res.status(403).json({ message: "Forbidden" });
+        }
+        
         const { message } = req.body;
 
         if(!message){
