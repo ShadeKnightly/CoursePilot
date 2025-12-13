@@ -56,7 +56,8 @@ const Registration = () => {
       const res = await fetch(`${API_BASE}/user/auth/${userId}/registration`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        credentials: "include"
       });
 
       if (!res.ok) {

@@ -45,6 +45,7 @@ const MessageInbox = () => {
     try {
       const res = await fetch(`${API_BASE}/user/auth/messages/${messageId}`, {
         method: "DELETE",
+        credentials: "include"
       });
 
       if (!res.ok) {

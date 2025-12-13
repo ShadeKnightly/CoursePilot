@@ -116,6 +116,7 @@ const CourseCart = () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ courseId: course.courseID }),
+            credentials: "include"
           });
 
           if (!res.ok) {

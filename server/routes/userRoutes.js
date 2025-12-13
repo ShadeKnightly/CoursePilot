@@ -1,6 +1,6 @@
 import express from 'express';
-import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, sendMessageController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController, viewMessagesController, deleteMessageController, bulkUnregisterController } from '../controllers/userControllers.js';
-
+import { checkoutCourseController, getStudentCoursesController, getStudentsController, registerUserToTermController, sendMessageController, updateUserProfileController, userSignInController, userSignUpController, userUnregisterController, viewMessagesController, deleteMessageController, bulkUnregisterController, getCurrentUserController, logoutController } from '../controllers/userControllers.js';
+import { verifyToken } from '../middleware/authMiddlewares.js';
 
 const router = express.Router();
 //get all students
@@ -12,26 +12,32 @@ router.post('/signUp', userSignUpController);
 // user signin
 router.post('/signIn', userSignInController);
 
-// user courses
-router.get('/:id/courses', getStudentCoursesController);
+// user logout (protected)
+router.post('/logout', verifyToken, logoutController);
 
-// user term registration
-router.patch('/:id/registration', registerUserToTermController);
+// get user (protected)
+router.get('/me', verifyToken, getCurrentUserController);
 
-// user course registration(course checkout)
-router.post('/:id/checkout', checkoutCourseController);
+// user courses (protected)
+router.get('/:id/courses', verifyToken, getStudentCoursesController);
 
-// user update profile
-router.patch('/:id/profile', updateUserProfileController);
+// user term registration (protected)
+router.patch('/:id/registration', verifyToken, registerUserToTermController);
 
-// user delete course(unregister)
-router.delete('/:id/unregister', userUnregisterController);
+// user course registration(course checkout) (protected)
+router.post('/:id/checkout', verifyToken, checkoutCourseController);
 
-// user bulk delete courses (unregister all)
-router.delete('/:id/registrations', bulkUnregisterController);
+// user update profile (protected)
+router.patch('/:id/profile', verifyToken, updateUserProfileController);
 
-// user send message
-router.post('/messages/:id', sendMessageController);
+// user delete course(unregister) (protected)
+router.delete('/:id/unregister', verifyToken, userUnregisterController);
+
+// user bulk delete courses (unregister all) (protected)
+router.delete('/:id/registrations', verifyToken, bulkUnregisterController);
+
+// user send message (protected)
+router.post('/messages/:id', verifyToken, sendMessageController);
 
 // admin view messages
 router.get('/messages', viewMessagesController);

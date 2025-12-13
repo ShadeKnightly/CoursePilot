@@ -41,6 +41,7 @@ const LogIn = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -48,14 +49,17 @@ const LogIn = () => {
         throw new Error(err.message || err.error || `Server error: ${res.status}`);
       }
 
-      const data = await res.json();
-      
-      // Save logged-in user to current session 
-      localStorage.setItem("currentUser", JSON.stringify(data));
-      setCurrentUser(data);
-      
-      setStatus(`Welcome back, ${data.username || data.email}!`);
+      const meRes = await fetch(`${API_BASE}/user/auth/me`, {
+        credentials: "include",
+      });
+      if(!meRes.ok){
+        throw new Error("Session validation failed");
+      }
 
+      const user = await meRes.json();
+      setCurrentUser(user);
+      
+      setStatus("Welcome back!");
       // Redirect after success
       setTimeout(() => {
         navigate("/dashboard");
